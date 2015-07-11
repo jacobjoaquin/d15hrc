@@ -4,8 +4,10 @@ boolean captureFrames = false;
 float phase = 0.0;
 float phaseInc = 1 / float(nFrames);
 
+
+
 void setup() {
-  size(500, 500);
+  size(2000, 2000);
   frameRate(10);
 }
 
@@ -21,7 +23,7 @@ void draw() {
   
   pushMatrix();
   translate(width / 2, height / 2);
-  ellipse(0, 0, 500, 500);
+  ellipse(0, 0, width, height);
   ellipse(0, 0, 5, 5);
   for (int i = 0; i < nFrames; i++) {
     pushMatrix();
@@ -29,8 +31,8 @@ void draw() {
     float w = map(sin((phase + offset * i) * TWO_PI), -1, 1, 0.75, 1.25);
     pushMatrix();
     rotate(i * offset * TWO_PI); 
-    translate(190, 0);
-    drawGeo(70, w, h, i * offset);
+    translate(190 / 500. * width, 0);
+    drawGeo(70 / 500.0 * width, w, h, i * offset);
     popMatrix();
     popMatrix();
   }
@@ -42,6 +44,9 @@ void draw() {
   {
     phase -= 1.0;
   }
+
+  save("hires.tiff");
+  exit();
 
   if (captureFrames) {  
     saveFrame("./gif/frame_####.gif");
