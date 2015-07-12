@@ -1,4 +1,7 @@
+import processing.pdf.*;
+
 int nFrames = 12;
+boolean capturePDF = false;
 boolean captureFrames = false;
 
 color cut = color(255, 0, 0);
@@ -25,10 +28,10 @@ class PlayaAngela extends Phenamation {
     float two_div_sqrt3 = 2 / sqrt(3);
 
     pushMatrix();
-    rotate(QUARTER_PI * phase);
+    rotate(2 * PI / 6.0 * phase);
     pushStyle();
     rectMode(CENTER);
-    
+
     for (int i = 0; i < 3; i++) {
       float n = i / 3.0;
       pushMatrix();
@@ -71,7 +74,11 @@ void createCuts() {
 }
 
 void setup() {
-  size(500, 500);
+  if (capturePDF) {
+    size(500, 500, PDF, "phenaDisco.pdf");
+  } else {
+    size(500, 500);
+  }
   frameRate(nFrames);
   //  frameRate(1);
   noFill();
@@ -91,14 +98,14 @@ void draw() {
 
   // Create phenakistoscope 
   stroke(etch);
-//  int nThings = 5;
-//  for (int i = 0; i < nThings; i++) {
-//    float ratio = i / float(nThings);    
-//    wheel.createFrames(test, i + 10, 0, lerp(0.1, 0.9, ratio) + 0.1, 0.5);
-//  }
+  //  int nThings = 5;
+  //  for (int i = 0; i < nThings; i++) {
+  //    float ratio = i / float(nThings);    
+  //    wheel.createFrames(test, i + 10, 0, lerp(0.1, 0.9, ratio) + 0.1, 0.5);
+  //  }
 
   wheel.createFrames(pa, nFrames, 0, 0.8, 0.5);
-  wheel.createFrames(pa, nFrames - 1, TWO_PI, 0.4, 0.25);
+  wheel.createFrames(pa, nFrames - 1, TWO_PI, 0.38, 0.20);
   wheel.createFrames(pa, nFrames + 1, PI, 0.55, 0.25);
   popStyle();
   popMatrix();
@@ -107,6 +114,10 @@ void draw() {
   phase += phaseInc;
   if (phase >= 1.0) {
     phase -= 1.0;
+  }
+
+  if (capturePDF) {
+    exit();
   }
 
   // Capture frames for animated gif
