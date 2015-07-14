@@ -7,7 +7,7 @@ float phaseInc = 1 / float(nFrames);
 
 
 void setup() {
-  size(2000, 2000);
+  size(500, 500);
   frameRate(10);
 }
 
@@ -32,7 +32,7 @@ void draw() {
     pushMatrix();
     rotate(i * offset * TWO_PI); 
     translate(190 / 500. * width, 0);
-    drawGeo(70 / 500.0 * width, w, h, i * offset);
+    drawGeo(70 / 500.0 * width, w, h);
     popMatrix();
     popMatrix();
   }
@@ -45,8 +45,8 @@ void draw() {
     phase -= 1.0;
   }
 
-  save("hires.tiff");
-  exit();
+//  save("hires.tiff");
+//  exit();
 
   if (captureFrames) {  
     saveFrame("./gif/frame_####.gif");
@@ -56,7 +56,7 @@ void draw() {
   }
 }
 
-void drawGeo(float s, float w, float h, float phase) {
+void drawGeo(float s, float w, float h) {
   float two_div_sqrt3 = 2 / sqrt(3);
   
   pushStyle();
