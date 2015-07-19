@@ -1,6 +1,6 @@
 import processing.pdf.*;
 
-int nFrames = 12;
+int nFrames = 15;
 boolean capturePDF = false;
 boolean captureFrames = false;
 

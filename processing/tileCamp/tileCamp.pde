@@ -28,7 +28,7 @@ void setup() {
   
   float w = float(width) / 20.0;
     
-  fill(#F09827);  
+  fill(#F09827);
   for (int y = 0; y < data.length; y++) {
     String row = data[y];
     float yPos = y * w + w * 0.5;
