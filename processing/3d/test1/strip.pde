@@ -35,12 +35,11 @@ class Strip {
   
   void display() {
     pushStyle();
-
-    noStroke();
-    for (LED L : lights) {
+    noStroke();    
+    for (LED led : lights) {
       pushMatrix();
-      fill(L.c);
-      translate(L.position.x, L.position.y, L.position.z);
+      fill(led.c);
+      translate(led.position.x, led.position.y, led.position.z);
       box(lightSize);
       popMatrix();
     }

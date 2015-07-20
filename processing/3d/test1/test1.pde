@@ -9,6 +9,8 @@ ArrayList<Strip> strips;
 PVector theCamera = new PVector(0, 200, 0);
 //StackPGraphics spg;
 
+ArrayList<Animation> animations;
+
 void drawPlane() {
   float corner = 10000;
   fill(#bbac88);  
@@ -36,6 +38,8 @@ void createHelios() {
     p2.add(origin);
     Strip s = new Strip(p1, p2);
     strips.add(s);
+    Animation a = new Animation(s);
+    animations.add(a);
   }
 }
 
@@ -45,7 +49,8 @@ void setup() {
   
 //  spg = new StackPGraphics(this);
   pixelMap = new PixelMap();
-  strips = new ArrayList<Strip>();  
+  strips = new ArrayList<Strip>();
+  animations = new ArrayList<Animation>();  
   createHelios();
   pixelMap.add(strips);
   pixelMap.finalize();
@@ -70,10 +75,8 @@ void draw() {
 
   drawPlane();
 
-  for (Strip s : strips) {
-    for (LED L : s.lights) {
-      L.c = color(random(255));
-    }
+  for (Animation a : animations) {
+    a.update();
   }
 
   for (Strip s : strips) {

@@ -1,6 +1,5 @@
 class PixelMap {
-  int theWidth;
-  int theHeight;
+  int theLength;
   PGraphics pg;
   ArrayList<LED> lights;
   PVector position;
@@ -21,16 +20,15 @@ class PixelMap {
 
   void finalize() {
     float s = sqrt(lights.size());
-    theWidth = ceil(s);
-    theHeight = ceil(s);
-    pg = createGraphics(theWidth, theHeight);
+    theLength = ceil(s);
+    pg = createGraphics(theLength, theLength);
     nLights = lights.size();
   }
 
   void update() {
-    for (int y = 0; y < theHeight; y++) {
-      int yIndex = y * theWidth;
-      for (int x = 0; x < theWidth; x++) {
+    for (int y = 0; y < theLength; y++) {
+      int yIndex = y * theLength;
+      for (int x = 0; x < theLength; x++) {
         int index = x + yIndex;
         
         if (index >= nLights) {
