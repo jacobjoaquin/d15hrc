@@ -1,27 +1,12 @@
 
+float lightSize = 2;
 int nLEDsPerMeter = 30;
 float meter = 100;
 
 ArrayList<Strip> strips;
 
-void setup() {
-  size(500, 500, P3D);
-  colorMode(HSB);
-  strips = new ArrayList<Strip>();
-  
-  Strip s = new Strip(new PVector(0, 0, -300), new PVector(500, 0, -300));
-  strips.add(s);
-}
-
-void draw() {
-  background(16);
-  pushMatrix();
-  // Reorient Plane
-  rotateX(PI);
-  translate(250, -500);
-
+void drawPlane() {
   float corner = 10000;
-  pushMatrix();
   fill(#bbac88);  
   beginShape();
   vertex(corner, 0, corner);
@@ -29,31 +14,31 @@ void draw() {
   vertex(-corner, 0, -corner);
   vertex(-corner, 0, corner);
   endShape(CLOSE);
-  popMatrix();
+}
+
+void setup() {
+  size(500, 500, P3D);
+  colorMode(HSB);
+  strips = new ArrayList<Strip>();
   
+  Strip s = new Strip(new PVector(-50, 0, 50), new PVector(0, 500, 50));
+  strips.add(s);
+}
+
+void draw() {
+  background(16);
   pushMatrix();
+  
+  // Reorient Plane
+  rotateX(PI);
+  translate(width / 2.0, -500);
 
-
-  pushMatrix();
-  translate(50, 0, 500);
-  int nBoxes = 150;
-  for (int i = 0; i < nBoxes; i++) {
-    pushMatrix();
-    pushStyle();
-    noStroke();
-    translate(0, i / float(nBoxes) * 500, 0);
-    fill(random(255), 255, 255);
-    box(100 / 30.0);
-    popStyle();
-    popMatrix();  
-  }
-  popMatrix();
-
+  drawPlane();
+    
   for (Strip s : strips) {
     s.display();
   }
 
-  popMatrix();
   popMatrix();  
 }
 

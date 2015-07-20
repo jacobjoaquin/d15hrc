@@ -25,6 +25,19 @@ class Strip {
   }
   
   void display() {
+    pushStyle();
+    stroke(255);
+//    line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+    noStroke();
+    colorMode(RGB);
+    fill(#ff6688);
+    for (PVector p : lights) {
+      pushMatrix();
+      translate(p.x, p.y, p.z);
+      box(lightSize);
+      popMatrix();
+    }
+    popStyle();
   }
 }
 
