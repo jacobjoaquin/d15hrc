@@ -1,10 +1,13 @@
+//import moonpaper.*;
 
 float lightSize = 2;
 int nLEDsPerMeter = 30;
 float meter = 100;
 
+PixelMap pixelMap;
 ArrayList<Strip> strips;
 PVector theCamera = new PVector(0, 200, 0);
+//StackPGraphics spg;
 
 void drawPlane() {
   float corner = 10000;
@@ -39,8 +42,13 @@ void createHelios() {
 void setup() {
   size(500, 500, P3D);
   colorMode(HSB);
+  
+//  spg = new StackPGraphics(this);
+  pixelMap = new PixelMap();
   strips = new ArrayList<Strip>();  
   createHelios();
+  pixelMap.add(strips);
+  pixelMap.finalize();
 }
 
 void draw() {
@@ -60,13 +68,21 @@ void draw() {
   0.0, 500.0, 500.0, 
   0.0, -1.0, 0.0);
 
-
   drawPlane();
+
+  for (Strip s : strips) {
+    for (LED L : s.lights) {
+      L.c = color(random(255));
+    }
+  }
 
   for (Strip s : strips) {
     s.display();
   }
 
   popMatrix();
+
+  pixelMap.update();
+  pixelMap.display();
 }
 
