@@ -10,6 +10,7 @@ class Strip {
     this.p1 = p1;
     this.p2 = p2;
     nLights = floor(dist(p1, p2) / meter * nLEDsPerMeter);
+    println(nLights);
     
     // Create positions for each LED
     lights = new ArrayList<PVector>();
