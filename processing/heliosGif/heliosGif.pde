@@ -1,4 +1,5 @@
 int nFrames = 120;
+boolean capture = false;
 
 ArrayList<Strip> strips;
 float phase = 0.0;
@@ -31,10 +32,10 @@ class Strip {
   }
 
   void display() {
-    float s = 3;
+    float s = 2;
     pushStyle();
     noStroke();
-    fill(255);
+    fill(255, 180);
     int L = motionOut.size();
     for (int i = 0; i < L; i++) {
       Boolean b = (Boolean) motionOut.get(i);
@@ -81,10 +82,12 @@ void draw() {
   for (Strip s : strips) {
     s.display();
   }
-  
-  saveFrame("./gif/frame_####.gif");
-  if (frameCount > nFrames) {
-    exit();
-  }  
+
+  if (capture) {
+    saveFrame("./gif/frame_####.gif");
+    if (frameCount >= nFrames) {
+      exit();
+    }
+  }
 }
 
