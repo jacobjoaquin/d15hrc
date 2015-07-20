@@ -4,6 +4,7 @@ int nLEDsPerMeter = 30;
 float meter = 100;
 
 ArrayList<Strip> strips;
+PVector theCamera = new PVector(0, 200, 0);
 
 void drawPlane() {
   float corner = 10000;
@@ -19,7 +20,7 @@ void drawPlane() {
 void createHelios() {
   float innerRadius = 32;
   int nStrips = 25;
-  PVector origin = new PVector(0, 300, 500);
+  PVector origin = new PVector(0, 500, 500);
 
   for (int i = 0; i < nStrips; i++) {
     PVector angle = PVector.fromAngle(i / float(nStrips - 1) * PI);
@@ -44,11 +45,21 @@ void setup() {
 
 void draw() {
   background(16);
+
   pushMatrix();
 
   // Reorient Plane
   rotateX(PI);
   translate(width / 2.0, -500);
+
+  // Set Camera
+  theCamera.x = map(mouseX, 0, height, -width, width);
+  theCamera.z = map(mouseY, 0, height, 0, -1000);
+  camera(
+  theCamera.x, theCamera.y, theCamera.z, 
+  0.0, 500.0, 500.0, 
+  0.0, -1.0, 0.0);
+
 
   drawPlane();
 

@@ -1,10 +1,18 @@
-
+class LED {
+  PVector position;
+  color c;
+  
+  LED(PVector position) {
+    this.position = position;
+    c = color(0);
+  }
+}
 
 class Strip {
   PVector p1;
   PVector p2;
   int nLights;
-  ArrayList<PVector> lights;
+  ArrayList<LED> lights;
 
   Strip(PVector p1, PVector p2) {
     this.p1 = p1;
@@ -13,12 +21,12 @@ class Strip {
     println(nLights);
     
     // Create positions for each LED
-    lights = new ArrayList<PVector>();
+    lights = new ArrayList<LED>();
     
     for (int i = 0; i < nLights; i++) {
       float n = i / float(nLights);
       PVector p = lerp(p1, p2, n);
-      lights.add(p);
+      lights.add(new LED(p));
     }
   }
   
@@ -27,14 +35,12 @@ class Strip {
   
   void display() {
     pushStyle();
-    stroke(255);
-//    line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+
     noStroke();
-    colorMode(RGB);
-    fill(#ff6688);
-    for (PVector p : lights) {
+    for (LED L : lights) {
       pushMatrix();
-      translate(p.x, p.y, p.z);
+      fill(L.c);
+      translate(L.position.x, L.position.y, L.position.z);
       box(lightSize);
       popMatrix();
     }
