@@ -39,10 +39,18 @@ void createHelios() {
   }
 }
 
+void updateCamera() {
+  theCamera.x = map(mouseX, 0, width, -width * 2, width * 2);
+  theCamera.z = map(mouseY, 0, height, 500, -1000);
+  camera(
+  theCamera.x, theCamera.y, theCamera.z, 
+  0.0, 500.0, 500.0, 
+  0.0, -1.0, 0.0);
+}
+
 void setup() {
   size(640, 480, P3D);
   colorMode(HSB);
-  
   pixelMap = new PixelMap();
   strips = new ArrayList<Strip>();
   animations = new ArrayList<Animation>();  
@@ -60,14 +68,7 @@ void draw() {
   rotateX(PI);
   translate(width / 2.0, -500);
 
-  // Set Camera
-  theCamera.x = map(mouseX, 0, width, -width * 2, width * 2);
-  theCamera.z = map(mouseY, 0, height, 500, -1000);
-  camera(
-  theCamera.x, theCamera.y, theCamera.z, 
-  0.0, 500.0, 500.0, 
-  0.0, -1.0, 0.0);
-
+  updateCamera();
   drawPlane();
 
   for (Animation a : animations) {

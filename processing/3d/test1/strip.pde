@@ -1,13 +1,3 @@
-class LED {
-  PVector position;
-  color c;
-  
-  LED(PVector position) {
-    this.position = position;
-    c = color(0);
-  }
-}
-
 class Strip {
   PVector p1;
   PVector p2;
@@ -21,20 +11,20 @@ class Strip {
     this.nLEDsPerMeter = nLEDsPerMeter;
     nLights = ceil(dist(p1, p2) / meter * nLEDsPerMeter);
     println(nLights);
-    
+
     // Create positions for each LED
     lights = new ArrayList<LED>();
-    
+
     for (int i = 0; i < nLights; i++) {
       float n = i / float(nLights);
       PVector p = lerp(p1, p2, n);
       lights.add(new LED(p));
     }
   }
-  
+
   void update() {
   }
-  
+
   void display() {
     pushStyle();
     noStroke();    
