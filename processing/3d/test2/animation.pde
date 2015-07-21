@@ -39,7 +39,7 @@ class Animation {
       LED led = strip.lights.get(i);
       
       if (b1 || b2) {
-        led.c = color(255);
+        led.c = color(#ff6699);
       } else {
         led.c = color(0);
       }
