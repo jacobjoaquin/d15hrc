@@ -45,7 +45,8 @@ class PixelMap {
     }
   }
 
-  void display() {    
+  void display() {
+    
     image(pg, position.x, position.y);
   }
 }

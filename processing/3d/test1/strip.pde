@@ -11,12 +11,14 @@ class LED {
 class Strip {
   PVector p1;
   PVector p2;
+  int nLEDsPerMeter;
   int nLights;
   ArrayList<LED> lights;
 
-  Strip(PVector p1, PVector p2) {
+  Strip(PVector p1, PVector p2, int nLEDsPerMeter) {
     this.p1 = p1;
     this.p2 = p2;
+    this.nLEDsPerMeter = nLEDsPerMeter;
     nLights = ceil(dist(p1, p2) / meter * nLEDsPerMeter);
     println(nLights);
     
