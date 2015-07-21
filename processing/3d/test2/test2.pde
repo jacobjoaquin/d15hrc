@@ -1,9 +1,10 @@
-float lightSize = 2;  // Size of LEDs
-float meter = 100;    // 1 pixel = 1cm
+float lightSize = 2;    // Size of LEDs
+float meter = 100;      // 1 pixel = 1cm
+float eyeHeight = 170;
 
 PixelMap pixelMap;
 ArrayList<Strip> strips;
-PVector theCamera = new PVector(0, 200, 0);
+PVector theCamera = new PVector(0, eyeHeight, 0);
 ArrayList<Animation> animations;
 
 void drawPlane() {
@@ -23,7 +24,7 @@ void setup() {
   
   pixelMap = new PixelMap();
   strips = new ArrayList<Strip>();
-  animations = new ArrayList<Animation>();  
+  animations = new ArrayList<Animation>();
   createTeatro();
   pixelMap.add(strips);
   pixelMap.finalize();
@@ -43,7 +44,7 @@ void draw() {
   theCamera.z = map(mouseY, 0, height, 500, -1000);
   camera(
   theCamera.x, theCamera.y, theCamera.z, 
-  0.0, 500.0, 500.0, 
+  0.0, eyeHeight, 500.0, 
   0.0, -1.0, 0.0);
 
   drawPlane();
