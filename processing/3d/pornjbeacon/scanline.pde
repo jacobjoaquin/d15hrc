@@ -5,10 +5,10 @@ class ScanLine {
   int theLength;
   float theMin;
   float theMax;
-  float head = 10;
+  float head = 20;
   float tail = 125;
   float velocity = 5;
-  float counter = head;
+  float counter = -head;
 
   ScanLine(Strip strip) {
     this.strip = strip;
@@ -39,7 +39,7 @@ class ScanLine {
     }
     counter += velocity;
     if (counter > 500 + head + tail) {
-      counter = -head;
+      counter = -head * 2;
     }
     popStyle();
   }

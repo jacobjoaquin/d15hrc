@@ -10,7 +10,8 @@ ArrayList<ScanLine> scanlines;
 
 void drawPlane() {
   float corner = 10000;
-  fill(#bbac88);  
+  //  fill(#bbac88);  
+  fill(64);  
   beginShape();
   vertex(corner, 0, corner);
   vertex(corner, 0, -corner);
@@ -28,9 +29,9 @@ void setup() {
   animations = new ArrayList<Animation>();
   scanlines = new ArrayList<ScanLine>();
   createTeatro();
-  
+
   for (Strip strip : strips) {
-//    animations.add(new Animation(strip));
+    //    animations.add(new Animation(strip));
     scanlines.add(new ScanLine(strip));
   }
 
@@ -57,9 +58,9 @@ void draw() {
 
   drawPlane();
 
-//  for (Animation a : animations) {
-//    a.update();
-//  }
+  //  for (Animation a : animations) {
+  //    a.update();
+  //  }
 
   for (ScanLine sl : scanlines) {
     sl.update();
@@ -73,5 +74,9 @@ void draw() {
 
   pixelMap.update();
   pixelMap.display();
-}
 
+//  saveFrame("./gif/frame####.gif");
+//  if (frameCount >= 125) {
+//    exit();
+//  }
+}
