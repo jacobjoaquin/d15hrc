@@ -5,7 +5,7 @@ class ScanLine {
   int theLength;
   float theMin;
   float theMax;
-  float bandwidth = 20;
+  float bandwidth = 10;
   float counter = bandwidth;
 
   ScanLine(Strip strip) {
@@ -23,19 +23,21 @@ class ScanLine {
     color orange = color(#ff8800);
     for (LED led : theLights) {
       float y = led.position.y;
-      float d = y - counter;
-      if (y >= counter && y <= counter + 20) {
+      float d = y - counter;      // Difference
+
+      if (d == bandwidth) {
         led.c = color(255);
-      } else if (d < -1 && d >= -tail) {
-//        led.c = color(pink, lerp(0, tail, d / tail));
+      }
+      else if (d >= 0 && d < bandwidth) {
+        led.c = lerpColor(color(255), pink, 1 - d / bandwidth);
+      } else if (d < 0 && d >= -tail) {
         led.c = lerpColor(pink, color(0), -d / tail);
-//        led.c = color(pink);
       } else {
         led.c = color(0);
       }
     }
     counter += 5;
-    if (counter > 500 + bandwidth) {
+    if (counter > 500 + bandwidth + tail) {
       counter = -bandwidth;
     }
     popStyle();

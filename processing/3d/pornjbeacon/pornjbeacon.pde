@@ -1,4 +1,4 @@
-float lightSize = 4;    // Size of LEDs
+float lightSize = 3;    // Size of LEDs
 float meter = 100;      // 1 pixel = 1cm
 float eyeHeight = 170;
 
