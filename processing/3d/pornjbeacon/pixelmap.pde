@@ -26,27 +26,27 @@ class PixelMap {
   }
 
   void update() {
+    pg.beginDraw();
+    pg.loadPixels();
     for (int y = 0; y < theLength; y++) {
       int yIndex = y * theLength;
       for (int x = 0; x < theLength; x++) {
         int index = x + yIndex;
-        
+
         if (index >= nLights) {
           break;
         }
-        
+
         LED led = lights.get(index);
-        pg.beginDraw();
-        pg.loadPixels();
         pg.pixels[index] = led.c;
-        pg.updatePixels();
-        pg.endDraw();
       }
     }
+    pg.updatePixels();
+    pg.endDraw();
   }
 
   void display() {
-    
+
     image(pg, position.x, position.y);
   }
 }
