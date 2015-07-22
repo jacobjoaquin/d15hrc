@@ -1,4 +1,4 @@
-float lightSize = 2;    // Size of LEDs
+float lightSize = 4;    // Size of LEDs
 float meter = 100;      // 1 pixel = 1cm
 float eyeHeight = 170;
 
@@ -50,7 +50,7 @@ void draw() {
 
   // Set Camera
   theCamera.x = map(mouseX, 0, width, -width * 2, width * 2);
-  theCamera.z = map(mouseY, 0, height, 500, -1000);
+  theCamera.z = map(mouseY, 0, height, 500, -4000);
   camera(
   theCamera.x, theCamera.y, theCamera.z, 
   0.0, eyeHeight, 500.0, 
