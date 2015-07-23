@@ -15,8 +15,5 @@ void createHelios() {
     p2.add(origin);
     Strip s = new Strip(p1, p2, density);
     strips.add(s);
-    Animation a = new Animation(s);
-    animations.add(a);
   }
 }
-

@@ -68,4 +68,3 @@ void createTeatro() {
     strips.add(strip);
   }
 }
-

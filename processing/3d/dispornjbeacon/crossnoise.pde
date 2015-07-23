@@ -1,46 +1,85 @@
+import java.util.Arrays;
+
 class CrossNoise extends Displayable {
   PixelMap pixelMap;
-  ArrayList<Animation> animations;
+  ArrayList<CrossNoiseAnimation> animations;
+  float r = 0.125;
+  Patchable<Integer> foo = new Patchable<Integer>(color(255, 0, 0));
+//  color c = color(255, 128, 0);
+
+  class CrossNoiseAnimation {
+    Strip strip;
+    ArrayList<Boolean> lights1;
+    ArrayList<Boolean> lights2;
+    int theLength;
+    PGraphics pg;
+
+    CrossNoiseAnimation(Strip strip) {
+      this.strip = strip;
+
+      theLength = strip.nLights;
+      pg = createGraphics(theLength, 1);
+      lights1 = new ArrayList<Boolean>();
+      lights2 = new ArrayList<Boolean>();
+
+      for (int i = 0; i < theLength; i++) {
+        if (random(1) < r) {
+          lights1.add(i, true);
+        } else {
+          lights1.add(i, false);
+        }
+
+        if (random(1) < r) {
+          lights2.add(i, true);
+        } else {
+          lights2.add(i, false);
+        }
+      }
+    }
+
+    void update() {
+      Boolean temp = lights1.remove(theLength - 1);
+      lights1.add(0, temp);
+      Boolean temp2 = lights2.remove(0);
+      lights2.add(temp2);
+
+      pg.loadPixels();
+      Arrays.fill(pg.pixels, color(0));
+
+      for (int i = 0; i < theLength; i++) {
+        Boolean b1 = lights1.get(i);
+        Boolean b2 = lights2.get(i);
+
+        if (b1 || b2) {
+          pg.pixels[i] = foo.value();
+        }
+      }
+
+      pg.updatePixels();
+    }
+  }
 
   CrossNoise(PixelMap pixelMap) {
     this.pixelMap = pixelMap;
-    animations = new ArrayList<Animation>();
+    animations = new ArrayList<CrossNoiseAnimation>();
 
     for (Strip strip : pixelMap.strips) {
-      animations.add(new Animation(strip));
+      animations.add(new CrossNoiseAnimation(strip));
     }
   }
 
   void update() {
-    for (Animation a : animations) {
+    for (CrossNoiseAnimation a : animations) {
       a.update();
     }
   }
 
   void display() {
     int rows = pixelMap.rows;
-    int columns = pixelMap.columns; 
-    color c = color(#ff8800);
-    color black = color(0);
 
-    loadPixels();
-    
     for (int row = 0; row < rows; row++) {
-      Animation a = animations.get(row);
-      ArrayList<Boolean> lights1 = a.lights1;
-      ArrayList<Boolean> lights2 = a.lights2;
-      int stripSize = a.strip.nLights;
-      int rowOffset = row * columns;
-      
-      for (int col = 0; col < stripSize; col++) {
-        if (lights1.get(col) || lights2.get(col)) {
-          pixels[rowOffset + col] = c;
-        } else {
-          pixels[rowOffset + col] = black;
-        }
-      }
+      CrossNoiseAnimation a = animations.get(row);
+      image(a.pg, 0, row);
     }
-    
-    updatePixels();
   }
 }

@@ -1,53 +1,51 @@
 import moonpaper.*;
 import moonpaper.opcodes.*;
 
-float lightSize = 3;    // Size of LEDs
-float meter = 100;      // 1 pixel = 1cm
-float eyeHeight = 170;
+float lightSize = 3;  // Size of LEDs
+float meter = 100;    // 1 pixel = 1cm
 
 PixelMap pixelMap;
 ArrayList<Strip> strips;
-PVector theCamera = new PVector(0, eyeHeight, 0);
-ArrayList<Animation> animations;
-ArrayList<ScanLine> scanlines;
-
 Moonpaper mp;
 
+class RandomValue extends MoonCodeEvent {
+  Patchable<Integer> pf;
+  float low;
+  float high;
+  
+  RandomValue(Patchable<Integer> pf, float low, float high) {
+    this.pf = pf;
+    this.low = low;
+    this.high = high;
+  }
+  
+  void exec() {
+    pf.set(color(random(low, high)));
+  }
+}
+
 void setup() {
+  frameRate(30);
+  
   // Setup Virtual Installation  
   pixelMap = new PixelMap();
   strips = new ArrayList<Strip>();
-  animations = new ArrayList<Animation>();
-  scanlines = new ArrayList<ScanLine>();
   createTeatro();
-
-//  for (Strip strip : strips) {
-//    //    animations.add(new Animation(strip));
-//    scanlines.add(new ScanLine(strip));
-//  }
-
   pixelMap.add(strips);
   size(pixelMap.pg.width, pixelMap.pg.height);
 
   // Create Sequence
   mp = new Moonpaper(this);
   Cel cel = mp.createCel();
+  CrossNoise cn = new CrossNoise(pixelMap);
 
-  mp.seq(new ClearCels());
-  mp.seq(new PushCel(cel, new CrossNoise(pixelMap)));  
-  
-  //  mp.seq(new PushCel(cel, scanlines.get(0)));  
-  //  mp.seq(new PushCel(cel, strips.get(0)));  
-//  mp.seq(new PushCel(cel, pixelMap));  
-  mp.seq(new Wait(30));
+  mp.seq(new ClearCels());  
+  mp.seq(new PushCel(cel, cn));  
+  mp.seq(new Wait(10));
+  mp.seq(new RandomValue(cn.foo, 0, 255));
 }
 
 void draw() {
-  for (Strip strip : strips) {
-    for (LED led : strip.lights) {
-      led.c = color(random(255));
-    }
-  }
   mp.update();
   mp.display();
 }
