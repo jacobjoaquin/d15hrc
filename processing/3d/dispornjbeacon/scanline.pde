@@ -28,8 +28,7 @@ class ScanLine extends Displayable {
 
       if (d == head) {
         led.c = color(255);
-      }
-      else if (d >= 0 && d < head) {
+      } else if (d >= 0 && d < head) {
         led.c = lerpColor(color(255), pink, 1 - d / head);
       } else if (d < 0 && d >= -tail) {
         led.c = lerpColor(pink, color(0), -d / tail);

@@ -2,10 +2,10 @@ class Animation {
   Strip strip;
   ArrayList<Boolean> lights1;
   ArrayList<Boolean> lights2;
-  float r = 1.0 / 3.0;
+  float r = 0.25;
   int theLength;
   
-  Animation(Strip strip) {
+  Animation(Strip strip)   {
     this.strip = strip;
     
     theLength = strip.nLights;
@@ -32,17 +32,17 @@ class Animation {
     lights1.add(0, temp);
     Boolean temp2 = lights2.remove(0);
     lights2.add(temp2);
-    
-    for (int i = 0; i < theLength; i++) {
-      Boolean b1 = lights1.get(i);
-      Boolean b2 = lights2.get(i);
-      LED led = strip.lights.get(i);
-      
-      if (b1 || b2) {
-        led.c = color(#ff6699);
-      } else {
-        led.c = color(0);
-      }
-    }
+//    
+//    for (int i = 0; i < theLength; i++) {
+//      Boolean b1 = lights1.get(i);
+//      Boolean b2 = lights2.get(i);
+//      LED led = strip.lights.get(i);
+//      
+//      if (b1 || b2) {
+//        led.c = color(#ff6699);
+//      } else {
+//        led.c = color(0);
+//      }
+//    }
   }
 }

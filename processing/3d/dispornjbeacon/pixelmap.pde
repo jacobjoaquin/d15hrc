@@ -6,6 +6,7 @@ class PixelMap extends Displayable {
   ArrayList<LED> lights;
   PVector position;
   int nLights;
+  ArrayList<Strip> strips;
 
   PixelMap() {
     lights = new ArrayList<LED>();
@@ -13,6 +14,7 @@ class PixelMap extends Displayable {
   }
 
   void add(ArrayList<Strip> strips) {
+    this.strips = strips;
     columns = 0;
     rows = strips.size();
     

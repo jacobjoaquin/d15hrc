@@ -1,4 +1,4 @@
-class Strip extends Displayable {
+class Strip {
   PVector p1;
   PVector p2;
   int nLEDsPerMeter;
@@ -10,22 +10,14 @@ class Strip extends Displayable {
     this.p2 = p2;
     this.nLEDsPerMeter = nLEDsPerMeter;
     nLights = ceil(dist(p1, p2) / meter * nLEDsPerMeter);
-//    println(nLights);
     
     // Create positions for each LED
-    lights = new ArrayList<LED>();
-    
+    lights = new ArrayList<LED>();    
     for (int i = 0; i < nLights; i++) {
       float n = i / float(nLights);
       PVector p = lerp(p1, p2, n);
       lights.add(new LED(p));
     }
-  }
-  
-  void update() {
-  }
-  
-  void display() {
   }
 }
 
