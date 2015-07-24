@@ -8,31 +8,15 @@ PixelMap pixelMap;
 ArrayList<Strip> strips;
 Moonpaper mp;
 
-class RandomValue extends MoonCodeEvent {
-  Patchable<Integer> pf;
-  float low;
-  float high;
-  
-  RandomValue(Patchable<Integer> pf, float low, float high) {
-    this.pf = pf;
-    this.low = low;
-    this.high = high;
-  }
-  
-  void exec() {
-    pf.set(color(random(low, high)));
-  }
-}
-
 void setup() {
-  frameRate(30);
-  
   // Setup Virtual Installation  
   pixelMap = new PixelMap();
   strips = new ArrayList<Strip>();
   createTeatro();
+  writeJSONStrips(strips, "foo.json");
+//  loadStrips(strips, "foo.json");
   pixelMap.add(strips);
-  size(pixelMap.pg.width, pixelMap.pg.height);
+  size(pixelMap.columns, pixelMap.rows);
 
   // Create Sequence
   mp = new Moonpaper(this);
@@ -41,11 +25,15 @@ void setup() {
 
   mp.seq(new ClearCels());  
   mp.seq(new PushCel(cel, cn));  
-  mp.seq(new Wait(10));
-  mp.seq(new RandomValue(cn.foo, 0, 255));
+  mp.seq(new Wait(30));
+  mp.seq(new Line(30, cn.theColor, 255));
+  mp.seq(new Wait(30));
+  mp.seq(new Line(30, cn.theColor, 0));
+  
 }
 
 void draw() {
   mp.update();
   mp.display();
 }
+

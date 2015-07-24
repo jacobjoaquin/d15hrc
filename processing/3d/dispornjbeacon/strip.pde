@@ -1,15 +1,15 @@
 class Strip {
   PVector p1;
   PVector p2;
-  int nLEDsPerMeter;
+  int density;
   int nLights;
   ArrayList<LED> lights;
 
-  Strip(PVector p1, PVector p2, int nLEDsPerMeter) {
+  Strip(PVector p1, PVector p2, int density) {
     this.p1 = p1;
     this.p2 = p2;
-    this.nLEDsPerMeter = nLEDsPerMeter;
-    nLights = ceil(dist(p1, p2) / meter * nLEDsPerMeter);
+    this.density = density;
+    nLights = ceil(dist(p1, p2) / meter * density);
     
     // Create positions for each LED
     lights = new ArrayList<LED>();    

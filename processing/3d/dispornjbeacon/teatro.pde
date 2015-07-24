@@ -1,7 +1,7 @@
 void createTeatro() {
   ArrayList<Strip> s = new ArrayList<Strip>();
   int nCapStrips = 3;
-  int density = 60;
+  int density = 30;
   
   // Left endcap
   PVector p0b = new PVector(-800, 0, 200);

@@ -4,7 +4,7 @@ class CrossNoise extends Displayable {
   PixelMap pixelMap;
   ArrayList<CrossNoiseAnimation> animations;
   float r = 0.125;
-  Patchable<Integer> foo = new Patchable<Integer>(color(255, 0, 0));
+  Patchable<Float> theColor = new Patchable<Float>(0.0);
 //  color c = color(255, 128, 0);
 
   class CrossNoiseAnimation {
@@ -51,7 +51,7 @@ class CrossNoise extends Displayable {
         Boolean b2 = lights2.get(i);
 
         if (b1 || b2) {
-          pg.pixels[i] = foo.value();
+          pg.pixels[i] = color(theColor.value());
         }
       }
 
