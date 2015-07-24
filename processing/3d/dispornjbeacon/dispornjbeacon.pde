@@ -3,6 +3,7 @@ import moonpaper.opcodes.*;
 
 float lightSize = 3;  // Size of LEDs
 float meter = 100;    // 1 pixel = 1cm
+String jsonFile = "test.json";
 
 PixelMap pixelMap;
 ArrayList<Strip> strips;
@@ -12,9 +13,7 @@ void setup() {
   // Setup Virtual Installation  
   pixelMap = new PixelMap();
   strips = new ArrayList<Strip>();
-  createTeatro();
-  writeJSONStrips(strips, "foo.json");
-//  loadStrips(strips, "foo.json");
+  loadStrips(strips, jsonFile);
   pixelMap.add(strips);
   size(pixelMap.columns, pixelMap.rows);
 
