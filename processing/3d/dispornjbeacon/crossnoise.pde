@@ -5,7 +5,7 @@ class CrossNoise extends Displayable {
   ArrayList<CrossNoiseAnimation> animations;
   float r = 0.125;
   Patchable<Float> theColor = new Patchable<Float>(0.0);
-//  color c = color(255, 128, 0);
+  //  color c = color(255, 128, 0);
 
   class CrossNoiseAnimation {
     Strip strip;
@@ -83,3 +83,4 @@ class CrossNoise extends Displayable {
     }
   }
 }
+
