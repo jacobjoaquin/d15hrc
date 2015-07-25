@@ -75,8 +75,9 @@ void draw() {
   pixelMap.update();
   pixelMap.display();
 
-//  saveFrame("./gif/frame####.gif");
-//  if (frameCount >= 125) {
-//    exit();
-//  }
+  //  saveFrame("./gif/frame####.gif");
+  //  if (frameCount >= 125) {
+  //    exit();
+  //  }
 }
+
