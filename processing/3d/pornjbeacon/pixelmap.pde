@@ -21,6 +21,7 @@ class PixelMap {
   void finalize() {
     float s = sqrt(lights.size());
     theLength = ceil(s);
+    println("the sqrt:  " + s);
     pg = createGraphics(theLength, theLength);
     nLights = lights.size();
   }

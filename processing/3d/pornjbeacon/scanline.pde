@@ -40,6 +40,7 @@ class ScanLine {
     counter += velocity;
     if (counter > 500 + head + tail) {
       counter = -head * 2;
+      println(frameCount);
     }
     popStyle();
   }
