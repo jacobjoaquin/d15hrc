@@ -27,8 +27,7 @@ void setup() {
   mp.seq(new Wait(30));
   mp.seq(new Line(30, cn.theColor, 255));
   mp.seq(new Wait(30));
-  mp.seq(new Line(30, cn.theColor, 0));
-  
+  mp.seq(new Line(30, cn.theColor, 0));  
 }
 
 void draw() {
