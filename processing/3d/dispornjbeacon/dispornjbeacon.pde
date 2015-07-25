@@ -1,3 +1,4 @@
+import hypermedia.net.*;
 import moonpaper.*;
 import moonpaper.opcodes.*;
 
@@ -8,12 +9,22 @@ PixelMap pixelMap;
 ArrayList<Strip> strips;
 Moonpaper mp;
 
+// Broadcast
+Broadcast broadcast;
+int port = 6100;
+String ip = "localhost"; 
+
+
 void setup() {
   // Setup Virtual Installation  
   strips = new ArrayList<Strip>();
   loadStrips(strips, jsonFile);
   pixelMap = new PixelMap(strips);
   size(pixelMap.columns, pixelMap.rows);
+  println(pixelMap.columns);
+  println(pixelMap.rows);
+  // Broadcast
+  broadcast = new Broadcast(this, pixelMap, ip, port);
 
   // Create Sequence
   mp = new Moonpaper(this);
@@ -31,5 +42,6 @@ void setup() {
 void draw() {
   mp.update();
   mp.display();
+  broadcast.send();
 }
 
