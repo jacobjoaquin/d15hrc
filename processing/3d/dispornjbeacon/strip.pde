@@ -10,7 +10,7 @@ class Strip {
     this.p2 = p2;
     this.density = density;
     nLights = ceil(dist(p1, p2) / meter * density);
-    
+
     // Create positions for each LED
     lights = new ArrayList<LED>();    
     for (int i = 0; i < nLights; i++) {
@@ -20,6 +20,4 @@ class Strip {
     }
   }
 }
-
-
 

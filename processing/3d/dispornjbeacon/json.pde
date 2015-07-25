@@ -1,7 +1,7 @@
 void loadStrips(ArrayList<Strip> strips, String filename) {
   JSONArray values = loadJSONArray(filename);
   int nValues = values.size();
-  
+
   for (int i = 0; i < nValues; i++) {
     JSONObject data = values.getJSONObject(i);
     int id = data.getInt("id");
@@ -33,26 +33,26 @@ void writeJSONStrips(ArrayList<Strip> strips, String saveAs) {
     data.setJSONArray("startPoint", p1);
 
     // Capture individual LED positions    
-//    JSONArray lights = new JSONArray(); 
-//    for (int j = 0; j < strip.nLights; j++) {
-//      JSONArray pos = new JSONArray(); 
-//      LED led = strip.lights.get(j);
-//      pos.setFloat(0, led.position.x);
-//      pos.setFloat(1, led.position.y);
-//      pos.setFloat(2, led.position.z);
-//      lights.setJSONArray(j, pos); 
-//    }
-//    data.setJSONArray("pixelPosition", lights);
-    
+    //    JSONArray lights = new JSONArray(); 
+    //    for (int j = 0; j < strip.nLights; j++) {
+    //      JSONArray pos = new JSONArray(); 
+    //      LED led = strip.lights.get(j);
+    //      pos.setFloat(0, led.position.x);
+    //      pos.setFloat(1, led.position.y);
+    //      pos.setFloat(2, led.position.z);
+    //      lights.setJSONArray(j, pos); 
+    //    }
+    //    data.setJSONArray("pixelPosition", lights);
+
     JSONArray p2 = new JSONArray();
     p2.setFloat(0, strip.p2.x);
     p2.setFloat(1, strip.p2.y);
     p2.setFloat(2, strip.p2.z);    
     data.setJSONArray("endPoint", p2);
-    
+
     values.setJSONObject(i, data);
   }
-  
+
   println(values);
   saveJSONArray(values, saveAs);
 }
