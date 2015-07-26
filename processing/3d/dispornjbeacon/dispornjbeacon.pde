@@ -21,9 +21,8 @@ void setup() {
   loadStrips(strips, jsonFile);
   pixelMap = new PixelMap(strips);
   size(pixelMap.columns, pixelMap.rows);
-  // Broadcast
   broadcast = new Broadcast(this, pixelMap, ip, port);
-
+  broadcast.pg = g;
   // Create Sequence
   mp = new Moonpaper(this);
   Cel cel = mp.createCel();
@@ -41,5 +40,6 @@ void draw() {
   mp.update();
   mp.display();
   broadcast.send();
+//  pixelMap.pg.image(g, 0, 0);
 }
 
