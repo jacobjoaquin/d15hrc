@@ -3,33 +3,14 @@ import moonpaper.*;
 import moonpaper.opcodes.*;
 
 float lightSize = 3;  // Size of LEDs
-float meter = 100;    // 1 pixel = 1cm
 float eyeHeight = 170;
-String jsonFile = "./data/test.json";
+String jsonFile = "./data/test.json";  // JSON file containing LED structure data
 
 ArrayList<Strip> strips;
 PVector theCamera = new PVector(0, eyeHeight, 0);
 PixelMap pixelMap;
-
-UDP udp;
-int listenPort = 6100;
-int nPixels;
-
-
-void receive(byte[] data, String ip, int port) {
-  PGraphics pg = pixelMap.pg;
-  pg.loadPixels();
-
-  for (int i = 0; i < nPixels; i++) {
-    int offset = i * 3;  
-    pg.pixels[i] = 0xFF000000 |
-      ((data[offset] & 0xFF) << 16) |
-      ((data[offset + 1] & 0xFF) << 8) |
-      (data[offset + 2] & 0xFF);
-  }
-
-  pg.updatePixels();
-}
+String ip = "localhost";
+int port = 6100;
 
 void drawPlane() {
   float corner = 10000;
@@ -52,10 +33,25 @@ void setup() {
 
   loadStrips(strips, jsonFile);
   pixelMap = new PixelMap(strips);
+  broadcastReceiver = new BroadcastReceiver(this, pixelMap, ip, port);
+}
+
+void pixelMapToStrips(PixelMap pixelMap, ArrayList<Strip> strips) {
+  int rows = strips.size();
+  PGraphics pg = pixelMap.pg;
+  pg.loadPixels();
   
-  nPixels = width * height;
-  udp = new UDP(this, listenPort);
-  udp.listen( true );
+  for (int row = 0; row < rows; row++) {
+    Strip strip = strips.get(row);
+    ArrayList<LED> lights = strip.lights;
+    int cols = strip.nLights;
+    int rowOffset = row * pixelMap.columns;
+    
+    for (int col = 0; col < cols; col++) {
+      LED led = lights.get(col);
+      led.c = pg.pixels[rowOffset + col];
+    }
+  } 
 }
 
 void draw() {
@@ -76,15 +72,22 @@ void draw() {
 
   // Draw landscape and structure  
   drawPlane();
+  
+  pushStyle();
+  noStroke();
+  pixelMapToStrips(pixelMap, strips);
+  
   for (Strip strip : strips) {
     for (LED led : strip.lights) {
       pushMatrix();
       PVector p = led.position;
+      fill(led.c);
       translate(p.x, p.y, p.z);
       box(lightSize);
       popMatrix();
     }
   }
+  popStyle();
 
   popMatrix();
 }
