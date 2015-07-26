@@ -6,7 +6,6 @@ class Broadcast {
   int port;
   int bufferSize = 3 * 173 * 23;
   byte buffer[] = new byte[bufferSize];
-  char bufferTest[] = new byte[bufferSize];
 
   Broadcast(PApplet papplet, PixelMap pixelMap, String ip, int port) {
     this.papplet = papplet;
@@ -18,10 +17,8 @@ class Broadcast {
   }
 
   private void setupUDP() {
-    //    udp = new UDP(papplet, this.port);
     udp = new UDP(papplet);
     udp.log(false);
-    //    udp.listen(false);
   }
 
   void send() {
@@ -37,20 +34,8 @@ class Broadcast {
       buffer[offset] = byte(r); 
       buffer[offset + 1] = byte(g); 
       buffer[offset + 2] = byte(b); 
-      bufferTest[offset] = char(r); 
-      bufferTest[offset + 1] = char(g); 
-      bufferTest[offset + 2] = char(b); 
     }
     
-    udp.send(bufferTest, ip, port);
-    //    if (frameCount % 60 == 0) {
-    //      println("send() " + frameCount);
-    //      String message = "test" + ";\n";
-    //      udp.send(message, ip, port);
-    //    }
+    udp.send(buffer, ip, port);
   }
 }
-
-void receive( byte[] data ) {
-}
-
