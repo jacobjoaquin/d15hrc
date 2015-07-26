@@ -7,7 +7,7 @@ class SimpleSweep extends Displayable {
   }
 
   void update() {
-    position = (position + 1) % nPixels;
+    position = (position + 1) % width;
   }
 
   void display() {
