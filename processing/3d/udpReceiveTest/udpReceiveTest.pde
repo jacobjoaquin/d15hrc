@@ -16,5 +16,6 @@ void setup() {
 }
 
 void draw() {
+  pixelMap.display();
 }
 

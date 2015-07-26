@@ -25,7 +25,7 @@ class PixelMap extends Displayable {
     }
 
     pg = createGraphics(columns, rows);
-//    pg.background(0, 0, 255);
+    //    pg.background(0, 0, 255);
     nLights = lights.size();
   }
 
@@ -50,7 +50,12 @@ class PixelMap extends Displayable {
   }
 
   void display() {
-    image(pg, 0, 0);
+    try {
+      image(pg, 0, 0);
+    }
+    catch (Exception e) {
+      println("PixelMap.display() exception. Could not draw image");
+    }
   }
 }
 

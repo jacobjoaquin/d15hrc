@@ -2,7 +2,7 @@ import hypermedia.net.*;
 
 
 class BroadcastReceiver {
-  PApplet papplet;
+  Object receiveHandler;
   PixelMap pixelMap;
   String ip;
   int port;
@@ -12,8 +12,8 @@ class BroadcastReceiver {
   int bufferSize;
   byte buffer[];
 
-  BroadcastReceiver(PApplet papplet, PixelMap pixelMap, String ip, int port) {
-    this.papplet = papplet;
+  BroadcastReceiver(Object receiveHandler, PixelMap pixelMap, String ip, int port) {
+    this.receiveHandler = receiveHandler;
     this.pixelMap = pixelMap;
     this.ip = ip;
     this.port = port;
@@ -22,18 +22,22 @@ class BroadcastReceiver {
   }
 
   void setup() {
-    println("setup");
     nPixels = pixelMap.columns * pixelMap.rows;
     bufferSize =  3 * nPixels + 1;
     buffer = new byte[bufferSize];
     pg = pixelMap.pg;
 
-    udp = new UDP(papplet, port);
+    udp = new UDP(receiveHandler, port);
+    udp.setReceiveHandler("broadcastReceiveHandler");
     udp.log(false);
     udp.listen(true);
   }
 
-  void receive(byte[] data, String ip, int port) {
+  private void receive(byte[] data, String ip, int port) {
+    if (data.length != bufferSize || data[0] == 1) {
+      return;
+    }
+    
     pg.loadPixels();
 
     for (int i = 0; i < nPixels; i++) {
@@ -50,7 +54,7 @@ class BroadcastReceiver {
 }
 
 
-void receive(byte[] data, String ip, int port) {
+void broadcastReceiveHandler(byte[] data, String ip, int port) {
   broadcastReceiver.receive(data, ip, port);
 }
 
