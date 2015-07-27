@@ -1,12 +1,3 @@
-/*
-About this animation:
- * Each strip is animated separately.
- * One light per strip.
- * The position of the led is incremented by 1.
- * The position is reset back to 0 once it exceeds the length of the strip.
- 
- */
-
 class StripSweep extends Displayable {
   PixelMap pixelMap;
   ArrayList<StripAnimation> animations;
