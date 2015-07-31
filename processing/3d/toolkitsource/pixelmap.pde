@@ -39,23 +39,23 @@ class PixelMap extends Displayable {
   }
 
   void update() {
-    pg.beginDraw();
-    pg.background(255, 0, 0);
-    pg.loadPixels();
-
-    for (int row = 0; row < rows; row++) {
-      Strip strip = strips.get(row);
-      int stripSize = strip.nLights;
-      int rowOffset = row * pg.width;
-      ArrayList<LED> leds = strip.leds;
-
-      for (int col = 0; col < stripSize; col++) {
-        pg.pixels[rowOffset + col] = leds.get(col).c;
-      }
-    }
-
-    pg.updatePixels();
-    pg.endDraw();
+//    pg.beginDraw();
+//    pg.background(255, 0, 0);
+//    pg.loadPixels();
+//
+//    for (int row = 0; row < rows; row++) {
+//      Strip strip = strips.get(row);
+//      int stripSize = strip.nLights;
+//      int rowOffset = row * pg.width;
+//      ArrayList<LED> leds = strip.leds;
+//
+//      for (int col = 0; col < stripSize; col++) {
+//        pg.pixels[rowOffset + col] = leds.get(col).c;
+//      }
+//    }
+//
+//    pg.updatePixels();
+//    pg.endDraw();
   }
 
   void display() {

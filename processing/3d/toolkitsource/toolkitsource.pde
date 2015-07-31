@@ -3,6 +3,8 @@ import moonpaper.*;
 import moonpaper.opcodes.*;
 
 String jsonFile = "test.json";
+
+Moonpaper mp;
 PixelMap pixelMap;
 Structure teatro;
 Structure flatPanel;
@@ -86,23 +88,37 @@ class StripSweep extends DisplayableStrips {
 void setup() {
   ArrayList<Strip> strips = new ArrayList<Strip>();
 
+  mp = new Moonpaper(this);
+
   loadStrips(strips, jsonFile);
   pixelMap = new PixelMap();
   teatro = new Structure(pixelMap, jsonFile);
   flatPanel = new Structure(pixelMap, "flatpanel.json");
   pixelMap.finalize();
+  size(pixelMap.columns, pixelMap.rows);
 
+  
   colorNoise = new ColorNoise(pixelMap, teatro, color(255, 0, 128, 180));
   stripSweep = new StripSweep(pixelMap, teatro);
-  size(pixelMap.columns, pixelMap.rows);
+
+  Cel cel0 = mp.createCel(width, height);
+
+  mp.seq(new ClearCels());
+  mp.seq(new PushCel(cel0, pixelMap));
+  mp.seq(new PushCel(cel0, colorNoise));
+  mp.seq(new Wait(300));
+  mp.seq(new PushCel(cel0, stripSweep));
+  mp.seq(new Wait(300));
 }
 
 void draw() {
   background(0);
-  colorNoise.update();
-  stripSweep.update();
-  colorNoise.display();
-  stripSweep.display();
-  pixelMap.display();
+  mp.update();
+  mp.display();
+//  colorNoise.update();
+//  stripSweep.update();
+//  colorNoise.display();
+//  stripSweep.display();
+//  pixelMap.display();
 }
 
