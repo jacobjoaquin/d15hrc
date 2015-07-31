@@ -1,11 +1,13 @@
 class DisplayableStructure extends Displayable {
-  PixelMap pixelMap;  
+  PixelMap pixelMap;
+  PGraphics pixelMapPG;
   Structure structure;
   PGraphics pg;            // Portion of structure, initialized in child
   
   DisplayableStructure(PixelMap pixelMap, Structure structure) {
     this.pixelMap = pixelMap;
     this.structure = structure;
+    pixelMapPG = this.pixelMap.pg;
   }
 }
 
@@ -32,39 +34,10 @@ class DisplayableStrips extends DisplayableStructure {
     return w;
   }
 
-  void update() {
-  }
-
   void display() {
-    pixelMap.pg.beginDraw();
-    pixelMap.pg.image(pg, 0, 0);
-    pixelMap.pg.endDraw();
-    
-  }
-}
-
-class AniFoo extends DisplayableStrips {
-
-  AniFoo(PixelMap pixelMap, Structure structure) {
-    super(pixelMap, structure);
-  }
-
-  void update() {
-    for (Strip strip : strips) {
-      
-    }    
-  }
-  
-  void display() {
-    pg.beginDraw();
-    pg.background(0);
-    pg.loadPixels();
-    for (int i = 0; i < 100; i++) {
-      pg.pixels[int(random(pg.width * pg.height))] = color(255);
-    }    
-    pg.updatePixels();
-    pg.endDraw();
-    super.display();
+    pixelMapPG.beginDraw();
+    pixelMapPG.image(pg, 0, rowOffset);
+    pixelMapPG.endDraw();    
   }
 }
 

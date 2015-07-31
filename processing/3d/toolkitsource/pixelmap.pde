@@ -1,5 +1,8 @@
 import moonpaper.*;
 
+// PixelMap.createStructure()
+// PixelMap.createPartialStructe()
+
 class PixelMap extends Displayable {
   ArrayList<Strip> strips;
   ArrayList<LED> leds;
