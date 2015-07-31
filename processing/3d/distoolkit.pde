@@ -108,6 +108,37 @@ class BroadcastReceiver {
 void broadcastReceiveHandler(byte[] data, String ip, int port) {
   broadcastReceiver.receive(data, ip, port);
 }
+class DisplayableStructure extends Displayable {
+  PixelMap pixelMap;
+  PGraphics pixelMapPG;
+  Structure structure;
+  PGraphics pg;            // Portion of structure, initialized in child
+  
+  DisplayableStructure(PixelMap pixelMap, Structure structure) {
+    this.pixelMap = pixelMap;
+    this.structure = structure;
+    pixelMapPG = this.pixelMap.pg;
+  }
+}
+
+class DisplayableStrips extends DisplayableStructure {
+  ArrayList<Strip> strips;
+  int rowOffset;
+
+  DisplayableStrips(PixelMap pixelMap, Structure structure) {
+    super(pixelMap, structure);
+    rowOffset = structure.rowOffset;
+    strips = structure.strips;
+    pg = createGraphics(structure.getMaxWidth(), strips.size());
+  }
+
+  void display() {
+    pixelMapPG.beginDraw();
+    pixelMapPG.image(pg, 0, rowOffset);
+    pixelMapPG.endDraw();    
+  }
+}
+
 void loadStrips(ArrayList<Strip> strips, String filename) {
   JSONArray values = loadJSONArray(filename);
   int nValues = values.size();
@@ -178,33 +209,43 @@ class LED {
 }
 import moonpaper.*;
 
+// PixelMap.createStructure()
+// PixelMap.createPartialStructe()
+
 class PixelMap extends Displayable {
-  int rows;
+  ArrayList<Strip> strips;
+  ArrayList<LED> leds;
+  int rows = 0;
   int columns;
   PGraphics pg;
-  ArrayList<LED> lights;
   int nLights;
-  ArrayList<Strip> strips;
-  int meter = 100;
 
-  PixelMap(ArrayList<Strip> strips) {
-    this.strips = strips;
-    lights = new ArrayList<LED>();
+  PixelMap() {
+    strips = new ArrayList<Strip>();
+  }
+
+  void addStrips(ArrayList<Strip> theStrips) {
+    strips.addAll(theStrips);
+    rows += theStrips.size();
+  }
+
+  void finalize() {
+    leds = new ArrayList<LED>();
     columns = 0;
-    rows = strips.size();
+    //    rows = strips.size();
 
     for (Strip strip : strips) {
       columns = max(columns, strip.nLights);
 
-      for (LED L : strip.lights) {
-        lights.add(L);
+      for (LED L : strip.leds) {
+        leds.add(L);
         L.c = color(random(255));
       }
     }
 
     pg = createGraphics(columns, rows);
-    //    pg.background(0, 0, 255);
-    nLights = lights.size();
+    pg.background(255, 0, 0);
+    nLights = leds.size();
   }
 
   void update() {
@@ -216,10 +257,10 @@ class PixelMap extends Displayable {
       Strip strip = strips.get(row);
       int stripSize = strip.nLights;
       int rowOffset = row * pg.width;
-      ArrayList<LED> lights = strip.lights;
+      ArrayList<LED> leds = strip.leds;
 
       for (int col = 0; col < stripSize; col++) {
-        pg.pixels[rowOffset + col] = lights.get(col).c;
+        pg.pixels[rowOffset + col] = leds.get(col).c;
       }
     }
 
@@ -229,6 +270,7 @@ class PixelMap extends Displayable {
 
   void display() {
     try {
+      pg.clear();
       image(pg, 0, 0);
     }
     catch (Exception e) {
@@ -236,13 +278,12 @@ class PixelMap extends Displayable {
     }
   }
 }
-
 class Strip {
   PVector p1;
   PVector p2;
   int density;
   int nLights;
-  ArrayList<LED> lights;
+  ArrayList<LED> leds;
 
   Strip(PVector p1, PVector p2, int density) {
     this.p1 = p1;
@@ -251,13 +292,68 @@ class Strip {
     nLights = ceil(dist(p1, p2) / 100 * density);
 
     // Create positions for each LED
-    lights = new ArrayList<LED>();    
+    leds = new ArrayList<LED>();    
     for (int i = 0; i < nLights; i++) {
       float n = i / float(nLights);
       PVector p = lerp(p1, p2, n);
-      lights.add(new LED(p));
+      leds.add(new LED(p));
     }
   }
+}
+
+class Structure {
+  PixelMap pixelMap;
+  String filename;
+  ArrayList<Strip> strips;
+  int rowOffset = 0;
+
+  Structure(PixelMap pixelMap, String filename) {
+    this.pixelMap = pixelMap;
+    this.filename = filename;
+    setup();
+  }  
+
+  void setup() {
+    strips = new ArrayList<Strip>();    
+    loadFromJSON(filename);
+    rowOffset = pixelMap.rows;
+    this.pixelMap.addStrips(strips);
+  }
+
+  void loadFromJSON(String filename) {
+    JSONArray values = loadJSONArray(filename);
+    int nValues = values.size();
+
+    for (int i = 0; i < nValues; i++) {
+      JSONObject data = values.getJSONObject(i);
+      int id = data.getInt("id");
+      int density = data.getInt("density");
+      int nLights = data.getInt("numberOfLights");
+      JSONArray startPoint = data.getJSONArray("startPoint");
+      JSONArray endPoint = data.getJSONArray("endPoint");
+      PVector p1 = new PVector(startPoint.getInt(0), startPoint.getInt(1), startPoint.getInt(2));
+      PVector p2 = new PVector(endPoint.getInt(0), endPoint.getInt(1), endPoint.getInt(2));
+      strips.add(new Strip(p1, p2, density));
+    }
+  }
+
+  int getMaxWidth() {
+    int w = 0;
+    for (Strip strip : strips) {
+      int size = strip.nLights;
+      
+      if (size > w) {
+        w = size;
+      }
+    }
+    return w;
+  }
+  
+  // getBox
+  // getHeight
+  // getDepth
+  // getXBoundaries
+  // etc...
 }
 
 float dist(PVector p1, PVector p2) {

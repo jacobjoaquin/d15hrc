@@ -50,4 +50,3 @@ void draw() {
   colorNoise.display();
   pixelMap.display();
 }
-

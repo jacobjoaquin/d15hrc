@@ -61,6 +61,7 @@ class PixelMap extends Displayable {
 
   void display() {
     try {
+      pg.clear();
       image(pg, 0, 0);
     }
     catch (Exception e) {
@@ -68,4 +69,3 @@ class PixelMap extends Displayable {
     }
   }
 }
-

@@ -22,22 +22,9 @@ class DisplayableStrips extends DisplayableStructure {
     pg = createGraphics(getMaxWidth(), strips.size());
   }
 
-  int getMaxWidth() {
-    int w = 0;
-    for (Strip strip : structure.strips) {
-      int size = strip.nLights;
-      
-      if (size > w) {
-        w = size;
-      }
-    }
-    return w;
-  }
-
   void display() {
     pixelMapPG.beginDraw();
     pixelMapPG.image(pg, 0, rowOffset);
     pixelMapPG.endDraw();    
   }
 }
-
