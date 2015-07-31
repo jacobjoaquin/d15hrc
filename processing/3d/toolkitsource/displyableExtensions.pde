@@ -17,9 +17,13 @@ class DisplayableStrips extends DisplayableStructure {
 
   DisplayableStrips(PixelMap pixelMap, Structure structure) {
     super(pixelMap, structure);
+    setup();
+  }
+  
+  void setup() {
     rowOffset = structure.rowOffset;
     strips = structure.strips;
-    pg = createGraphics(getMaxWidth(), strips.size());
+    pg = createGraphics(structure.getMaxWidth(), strips.size());
   }
 
   void display() {

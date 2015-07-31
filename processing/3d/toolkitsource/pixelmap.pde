@@ -23,7 +23,6 @@ class PixelMap extends Displayable {
   void finalize() {
     leds = new ArrayList<LED>();
     columns = 0;
-    //    rows = strips.size();
 
     for (Strip strip : strips) {
       columns = max(columns, strip.nLights);
