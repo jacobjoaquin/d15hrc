@@ -3,7 +3,7 @@ class Strip {
   PVector p2;
   int density;
   int nLights;
-  ArrayList<LED> lights;
+  ArrayList<LED> leds;
 
   Strip(PVector p1, PVector p2, int density) {
     this.p1 = p1;
@@ -12,11 +12,11 @@ class Strip {
     nLights = ceil(dist(p1, p2) / 100 * density);
 
     // Create positions for each LED
-    lights = new ArrayList<LED>();    
+    leds = new ArrayList<LED>();    
     for (int i = 0; i < nLights; i++) {
       float n = i / float(nLights);
       PVector p = lerp(p1, p2, n);
-      lights.add(new LED(p));
+      leds.add(new LED(p));
     }
   }
 }

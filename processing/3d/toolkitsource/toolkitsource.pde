@@ -5,21 +5,21 @@ import moonpaper.opcodes.*;
 String jsonFile = "test.json";
 PixelMap pixelMap;
 JustNoise myAnimation;
+Structure teatro;
+Structure flatpanel;
 
-class DisPixelMap extends Displayable {
-  PixelMap pixelMap;
+AniFoo anifoo;
 
-  DisPixelMap(PixelMap pixelMap) {
-    this.pixelMap = pixelMap;
-  }
-}
+// PixelMap.createStructure()
+// PixelMap.createPartialStructe()
 
 
-class JustNoise extends DisPixelMap {
+
+class JustNoise extends Displayable {
   int nPixels;
 
-  JustNoise(PixelMap pixelMap) {
-    super(pixelMap);
+  JustNoise(Structure targetStucture) {
+//    super(pixelMap);
     nPixels = width * height;
   }
 
@@ -42,8 +42,9 @@ class Structure {
   // Child classes map to global PixelMap via various methods
   
   PixelMap pixelMap;
-  ArrayList<Strip> strips;
   String filename;
+  ArrayList<Strip> strips;
+  int rowOffset = 0;
 
   Structure(PixelMap pixelMap, String filename) {
     this.pixelMap = pixelMap;
@@ -54,6 +55,7 @@ class Structure {
   void setup() {
     strips = new ArrayList<Strip>();    
     loadFromJSON(filename);
+    rowOffset = pixelMap.rows;
     this.pixelMap.addStrips(strips);
   }
 
@@ -72,8 +74,6 @@ class Structure {
       PVector p2 = new PVector(endPoint.getInt(0), endPoint.getInt(1), endPoint.getInt(2));
       strips.add(new Strip(p1, p2, density));
     }
-
-    println(strips.size());
   }
 }
 
@@ -82,24 +82,25 @@ class Structure {
 void loadStructures() {
   ArrayList<Strip> strips = new ArrayList<Strip>();
 
-
   loadStrips(strips, jsonFile);
   pixelMap = new PixelMap();
-  Structure teatro = new Structure(pixelMap, jsonFile);
-  Structure flatpanel = new Structure(pixelMap, "flatpanel.json");
+  teatro = new Structure(pixelMap, jsonFile);
+  flatpanel = new Structure(pixelMap, "flatpanel.json");
   pixelMap.finalize();
 
+  anifoo = new AniFoo(pixelMap, teatro);
   size(pixelMap.columns, pixelMap.rows);
 }
 
 void setup() {
   loadStructures();
-  myAnimation = new JustNoise(pixelMap);
+  myAnimation = new JustNoise(flatpanel);
 }
 
 void draw() {
   background(0);
-  myAnimation.update();
-  myAnimation.display();
+  anifoo.update();
+  anifoo.display();
+  pixelMap.display();
 }
 

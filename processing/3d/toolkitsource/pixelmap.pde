@@ -1,13 +1,12 @@
 import moonpaper.*;
 
 class PixelMap extends Displayable {
-  int rows;
+  ArrayList<Strip> strips;
+  ArrayList<LED> leds;
+  int rows = 0;
   int columns;
   PGraphics pg;
-  ArrayList<LED> lights;
   int nLights;
-  ArrayList<Strip> strips;
-  int meter = 100;
 
   PixelMap() {
     strips = new ArrayList<Strip>();
@@ -15,25 +14,26 @@ class PixelMap extends Displayable {
 
   void addStrips(ArrayList<Strip> theStrips) {
     strips.addAll(theStrips);
+    rows += theStrips.size();
   }
 
   void finalize() {
-    lights = new ArrayList<LED>();
+    leds = new ArrayList<LED>();
     columns = 0;
-    rows = strips.size();
+    //    rows = strips.size();
 
     for (Strip strip : strips) {
       columns = max(columns, strip.nLights);
 
-      for (LED L : strip.lights) {
-        lights.add(L);
+      for (LED L : strip.leds) {
+        leds.add(L);
         L.c = color(random(255));
       }
     }
 
-    println(strips.size());
     pg = createGraphics(columns, rows);
-    nLights = lights.size();
+    pg.background(255, 0, 0);
+    nLights = leds.size();
   }
 
   void update() {
@@ -45,10 +45,10 @@ class PixelMap extends Displayable {
       Strip strip = strips.get(row);
       int stripSize = strip.nLights;
       int rowOffset = row * pg.width;
-      ArrayList<LED> lights = strip.lights;
+      ArrayList<LED> leds = strip.leds;
 
       for (int col = 0; col < stripSize; col++) {
-        pg.pixels[rowOffset + col] = lights.get(col).c;
+        pg.pixels[rowOffset + col] = leds.get(col).c;
       }
     }
 
