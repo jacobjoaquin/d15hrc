@@ -2,7 +2,7 @@ float lightSize = 3;  // Size of LEDs
 float eyeHeight = 170;
 String jsonFile = "teatro.json";
 
-ArrayList<Strip> strips;
+Strips strips;
 PVector theCamera = new PVector(0, eyeHeight, 0);
 
 void drawPlane() {
@@ -22,9 +22,8 @@ void setup() {
   size(640, 480, P3D);
 
   // Setup Virtual Installation  
-  //  strips = new ArrayList<Strip>();
-  strips = createTeatro();
-  //  writeJSONStrips(strips, jsonFile);
+  strips = createTheTeatro();
+//  writeJSONStrips(strips, jsonFile);
 
   noStroke();
   fill(255);
@@ -36,7 +35,6 @@ void draw() {
 
   // Reorient Plane
   rotateX(PI);
-  //  scale(-1, 1, 1);
   translate(width / 2.0, -500);
 
   // Set Camera
