@@ -12,6 +12,8 @@ Structure flatPanel;
 ColorNoise colorNoise;
 StripSweep stripSweep;
 
+int theFrameRate = 60;
+
 class ColorNoise extends DisplayableStrips {
   color c;
 
@@ -75,7 +77,7 @@ class StripSweep extends DisplayableStrips {
     pg.loadPixels();
     for (int row = 0; row < pg.height; row++) {
       StripAnimation animation = animations.get(row);
-      pg.pixels[row * pg.width + animation.position] = color(255);
+      pg.pixels[row * pg.width + animation.position] = color(255, 128, 0);
     }
 
     pg.updatePixels();
@@ -86,6 +88,7 @@ class StripSweep extends DisplayableStrips {
 
 
 void setup() {
+  frameRate(theFrameRate);
   ArrayList<Strip> strips = new ArrayList<Strip>();
 
   mp = new Moonpaper(this);
@@ -103,22 +106,27 @@ void setup() {
 
   Cel cel0 = mp.createCel(width, height);
 
+  
+  ColorNoise cn = new ColorNoise(pixelMap, teatro, color(255, 0, 128, 180));
+  PatchSet ps = new PatchSet(cn.transparency, 0.0);
   mp.seq(new ClearCels());
   mp.seq(new PushCel(cel0, pixelMap));
-  mp.seq(new PushCel(cel0, colorNoise));
-  mp.seq(new Wait(300));
-  mp.seq(new PushCel(cel0, stripSweep));
-  mp.seq(new Wait(300));
+  mp.seq(new PushCel(cel0, cn));
+  mp.seq(new Wait(120));
+  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, teatro)));
+  mp.seq(new Wait(120));
+  mp.seq(ps);
+  mp.seq(new Line(120, cn.transparency, 255.0));
+  mp.seq(new Wait(120));
+  mp.seq(new PushCel(cel0, new ColorNoise(pixelMap, flatPanel, color(255))));
+  mp.seq(new Wait(120));
+  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, flatPanel)));
+  mp.seq(new Wait(120));
 }
 
 void draw() {
   background(0);
   mp.update();
   mp.display();
-//  colorNoise.update();
-//  stripSweep.update();
-//  colorNoise.display();
-//  stripSweep.display();
-//  pixelMap.display();
 }
 

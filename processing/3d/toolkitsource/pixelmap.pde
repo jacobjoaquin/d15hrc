@@ -64,7 +64,7 @@ class PixelMap extends Displayable {
       image(pg, 0, 0);
     }
     catch (Exception e) {
-      println("PixelMap.display() exception. Could not draw image");
+      println("Frame: " + frameCount + "  PixelMap.display() exception. Could not draw image");
     }
   }
 }
