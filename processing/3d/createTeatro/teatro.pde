@@ -68,19 +68,49 @@ class Teatro extends StructureLayout {
       popMatrix();
     }
 
+
+      // verticals
+      {
+        pushMatrix();
+        translate(inchesToCM( crossbar + spacer / 2.0), 0, 0);
+        
+        float verticals[] = {
+          1, 9, 17, 21
+        };
+
+        for (int v = 0; v < verticals.length - 1; v++) {
+          pushMatrix();
+          translate(0, inchesToCM(verticals[v] * 12), 0);
+          float d = (verticals[v + 1] - verticals[v]) * 12;
+          PVector p1 = new PVector(0, 0, 0);
+          PVector p2 = new PVector(0, inchesToCM(d), 0);
+
+          Strip s = new Strip(transPVector(p1), transPVector(p2), density);
+          strips.add(s);
+          popMatrix();
+        }
+        popMatrix();
+      }
+
+
     {
       pushMatrix();
       translate(inchesToCM(2 * crossbar + spacer), 0, 0);
-      rotateY(-HALF_PI);
+
       // Top Helios
       pushMatrix();
-      translate(0, inchesToCM((21 - 15) * 12), 0);
+      rotateY(-HALF_PI);
+      translate(0, inchesToCM((21 * 12)) - 450, 0);
       helios();
       popMatrix();
-      
+
       // Bottom Helios
-      
-      
+      pushMatrix();
+      rotateY(-HALF_PI);
+      rotateZ(PI);
+      translate(-inchesToCM(8 * 12), -inchesToCM(12) - 450, 0);
+      helios();
+      popMatrix();
       popMatrix();
     }
   }
