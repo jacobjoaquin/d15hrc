@@ -4,9 +4,10 @@ import moonpaper.opcodes.*;
 
 float lightSize = 4;  // Size of LEDs
 float eyeHeight = 170;
-String jsonFile = "../teatro.json";  // JSON file containing LED structure data
+//String jsonFile = "../teatro.json";  // JSON file containing LED structure data
+String jsonFile = "../asterix.json";  // JSON file containing LED structure data
 
-ArrayList<Strip> strips;
+Strips strips;
 PVector theCamera = new PVector(0, eyeHeight, 0);
 PixelMap pixelMap;
 String ip = "localhost";
@@ -29,16 +30,20 @@ void setup() {
   size(640, 480, P3D);
 
   // Setup Virtual Installation  
-  strips = new ArrayList<Strip>();
+  strips = new Strips();
 
+  pushMatrix();
+  scale(1, -1, 1);
   loadStrips(strips, jsonFile);
+  popMatrix();
+  
   pixelMap = new PixelMap();
   pixelMap.addStrips(strips);
   pixelMap.finalize();
   broadcastReceiver = new BroadcastReceiver(this, pixelMap, ip, port);
 }
 
-void pixelMapToStrips(PixelMap pixelMap, ArrayList<Strip> strips) {
+void pixelMapToStrips(PixelMap pixelMap, Strips strips) {
   int rows = strips.size();
   PGraphics pg = pixelMap.pg;
   pg.loadPixels();
@@ -57,7 +62,7 @@ void pixelMapToStrips(PixelMap pixelMap, ArrayList<Strip> strips) {
 }
 
 void draw() {
-  background(16);
+  background(32);
   pushMatrix();
 
   // Reorient Plane
@@ -69,7 +74,7 @@ void draw() {
   theCamera.z = map(mouseY, 0, height, 500, -3700);
   camera(
   theCamera.x, theCamera.y, theCamera.z, 
-  0.0, eyeHeight, 500.0, 
+  0.0, eyeHeight * 2, 500.0, 
   0.0, -1.0, 0.0);
 
   // Draw landscape and structure  

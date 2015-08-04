@@ -148,7 +148,7 @@ class DisplayableStrips extends DisplayableStructure {
     pixelMapPG.endDraw();    
   }
 }
-void loadStrips(ArrayList<Strip> strips, String filename) {
+void loadStrips(Strips strips, String filename) {
   JSONArray values = loadJSONArray(filename);
   int nValues = values.size();
 
@@ -159,13 +159,27 @@ void loadStrips(ArrayList<Strip> strips, String filename) {
     int nLights = data.getInt("numberOfLights");
     JSONArray startPoint = data.getJSONArray("startPoint");
     JSONArray endPoint = data.getJSONArray("endPoint");
-    PVector p1 = new PVector(startPoint.getInt(0), startPoint.getInt(1), startPoint.getInt(2));
-    PVector p2 = new PVector(endPoint.getInt(0), endPoint.getInt(1), endPoint.getInt(2));
+
+    float x1 = startPoint.getInt(0);
+    float y1 = startPoint.getInt(1);
+    float z1 = startPoint.getInt(2);
+    float x2 = endPoint.getInt(0);
+    float y2 = endPoint.getInt(1);
+    float z2 = endPoint.getInt(2);
+    float x3 = modelX(x1, y1, z1); 
+    float y3 = modelY(x1, y1, z1); 
+    float z3 = modelZ(x1, y1, z1); 
+    float x4 = modelX(x2, y2, z2); 
+    float y4 = modelY(x2, y2, z2); 
+    float z4 = modelZ(x2, y2, z2); 
+
+    PVector p1 = new PVector(x3, y3, z3);
+    PVector p2 = new PVector(x4, y4, z4);
     strips.add(new Strip(p1, p2, density));
   }
 }
 
-void writeJSONStrips(ArrayList<Strip> strips, String saveAs) {
+void writeJSONStrips(Strips strips, String saveAs) {
   JSONArray values = new JSONArray();
 
   for (int i = 0; i < strips.size (); i++) {
@@ -206,7 +220,6 @@ void writeJSONStrips(ArrayList<Strip> strips, String saveAs) {
   println(values);
   saveJSONArray(values, saveAs);
 }
-
 class LED {
   PVector position;
   color c;
@@ -286,6 +299,9 @@ class PixelMap extends Displayable {
     }
   }
 }
+class Strips extends ArrayList<Strip> {
+}
+
 class Strip {
   PVector p1;
   PVector p2;
@@ -297,7 +313,7 @@ class Strip {
     this.p1 = p1;
     this.p2 = p2;
     this.density = density;
-    nLights = ceil(dist(p1, p2) / 100 * density);
+    nLights = ceil(dist(p1, p2) / meter * density);
 
     // Create positions for each LED
     leds = new ArrayList<LED>();    

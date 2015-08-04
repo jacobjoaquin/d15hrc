@@ -1,3 +1,6 @@
+class Strips extends ArrayList<Strip> {
+}
+
 class Strip {
   PVector p1;
   PVector p2;
@@ -9,7 +12,7 @@ class Strip {
     this.p1 = p1;
     this.p2 = p2;
     this.density = density;
-    nLights = ceil(dist(p1, p2) / 100 * density);
+    nLights = ceil(dist(p1, p2) / meter * density);
 
     // Create positions for each LED
     leds = new ArrayList<LED>();    

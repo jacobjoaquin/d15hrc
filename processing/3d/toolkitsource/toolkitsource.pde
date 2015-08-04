@@ -89,7 +89,7 @@ class StripSweep extends DisplayableStrips {
 
 void setup() {
   frameRate(theFrameRate);
-  ArrayList<Strip> strips = new ArrayList<Strip>();
+  Strips strips = new Strips();
 
   mp = new Moonpaper(this);
 
