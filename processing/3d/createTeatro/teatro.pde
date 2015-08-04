@@ -1,8 +1,4 @@
-void newStrip(PVector p1, PVector p2, int density, int nLeds) {
-}
-
-class Strips extends ArrayList<Strip> {
-}
+class Strips extends ArrayList<Strip> {}
 
 class StructureLayout {
   Strips strips;

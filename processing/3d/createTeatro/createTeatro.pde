@@ -23,7 +23,7 @@ void setup() {
 
   // Setup Virtual Installation  
   strips = createTheTeatro();
-//  writeJSONStrips(strips, jsonFile);
+  writeJSONStrips(strips, jsonFile);
 
   noStroke();
   fill(255);

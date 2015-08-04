@@ -2,9 +2,9 @@ import hypermedia.net.*;
 import moonpaper.*;
 import moonpaper.opcodes.*;
 
-float lightSize = 3;  // Size of LEDs
+float lightSize = 4;  // Size of LEDs
 float eyeHeight = 170;
-String jsonFile = "./data/test.json";  // JSON file containing LED structure data
+String jsonFile = "../teatro.json";  // JSON file containing LED structure data
 
 ArrayList<Strip> strips;
 PVector theCamera = new PVector(0, eyeHeight, 0);
@@ -32,7 +32,9 @@ void setup() {
   strips = new ArrayList<Strip>();
 
   loadStrips(strips, jsonFile);
-  pixelMap = new PixelMap(strips);
+  pixelMap = new PixelMap();
+  pixelMap.addStrips(strips);
+  pixelMap.finalize();
   broadcastReceiver = new BroadcastReceiver(this, pixelMap, ip, port);
 }
 
@@ -40,18 +42,18 @@ void pixelMapToStrips(PixelMap pixelMap, ArrayList<Strip> strips) {
   int rows = strips.size();
   PGraphics pg = pixelMap.pg;
   pg.loadPixels();
-  
+
   for (int row = 0; row < rows; row++) {
     Strip strip = strips.get(row);
-    ArrayList<LED> lights = strip.lights;
+    ArrayList<LED> lights = strip.leds;
     int cols = strip.nLights;
     int rowOffset = row * pixelMap.columns;
-    
+
     for (int col = 0; col < cols; col++) {
       LED led = lights.get(col);
       led.c = pg.pixels[rowOffset + col];
     }
-  } 
+  }
 }
 
 void draw() {
@@ -72,13 +74,13 @@ void draw() {
 
   // Draw landscape and structure  
   drawPlane();
-  
+
   pushStyle();
   noStroke();
   pixelMapToStrips(pixelMap, strips);
-  
+
   for (Strip strip : strips) {
-    for (LED led : strip.lights) {
+    for (LED led : strip.leds) {
       pushMatrix();
       PVector p = led.position;
       fill(led.c);
