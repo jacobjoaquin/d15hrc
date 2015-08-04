@@ -32,14 +32,26 @@ void setup() {
   // Setup Virtual Installation  
   strips = new Strips();
 
+  // Load teatro
+  Strips teatro = new Strips();
+  loadStrips(teatro, "../teatro.json");
+  strips.addAll(teatro);
+  
+  // Load asterix
   pushMatrix();
   scale(1, -1, 1);
-  loadStrips(strips, jsonFile);
+  translate(0, 0, -2000);
+  Strips asterix = new Strips();
+  loadStrips(asterix, "../asterix.json");
   popMatrix();
+  strips.addAll(asterix);
   
+  // Generate PixelMap
   pixelMap = new PixelMap();
   pixelMap.addStrips(strips);
   pixelMap.finalize();
+  
+  // Receiver
   broadcastReceiver = new BroadcastReceiver(this, pixelMap, ip, port);
 }
 
