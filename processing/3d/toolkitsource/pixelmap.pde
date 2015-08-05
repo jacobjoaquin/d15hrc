@@ -4,7 +4,7 @@ import moonpaper.*;
 // PixelMap.createPartialStructe()
 
 class PixelMap extends Displayable {
-  ArrayList<Strip> strips;
+  Strips strips;
   ArrayList<LED> leds;
   int rows = 0;
   int columns;
@@ -12,16 +12,16 @@ class PixelMap extends Displayable {
   int nLights;
 
   PixelMap() {
-    strips = new ArrayList<Strip>();
+    strips = new Strips();
   }
 
-  void addStrips(ArrayList<Strip> theStrips) {
+  void addStrips(Strips theStrips) {
     strips.addAll(theStrips);
     rows += theStrips.size();
   }
 
   void finalize() {
-    leds = new ArrayList<LED>();
+    leds = new LEDs();
     columns = 0;
 
     for (Strip strip : strips) {

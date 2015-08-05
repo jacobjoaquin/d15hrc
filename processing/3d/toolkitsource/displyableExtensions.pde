@@ -5,7 +5,7 @@ class DisplayableStructure extends Displayable {
   PGraphics pg;            // Portion of structure, initialized in child
   Patchable<Integer> theBlendMode;
   Patchable<Float> transparency;
-  
+
   DisplayableStructure(PixelMap pixelMap, Structure structure) {
     this.pixelMap = pixelMap;
     this.structure = structure;
@@ -16,14 +16,14 @@ class DisplayableStructure extends Displayable {
 }
 
 class DisplayableStrips extends DisplayableStructure {
-  ArrayList<Strip> strips;
+  Strips strips;
   int rowOffset;
 
   DisplayableStrips(PixelMap pixelMap, Structure structure) {
     super(pixelMap, structure);
     setup();
   }
-  
+
   void setup() {
     rowOffset = structure.rowOffset;
     strips = structure.strips;
@@ -35,6 +35,7 @@ class DisplayableStrips extends DisplayableStructure {
     pixelMapPG.blendMode(theBlendMode.value());
     pixelMapPG.tint(255, transparency.value());
     pixelMapPG.image(pg, 0, rowOffset);
-    pixelMapPG.endDraw();    
+    pixelMapPG.endDraw();
   }
 }
+

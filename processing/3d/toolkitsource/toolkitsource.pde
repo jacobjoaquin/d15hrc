@@ -7,12 +7,17 @@ String jsonFile = "test.json";
 Moonpaper mp;
 PixelMap pixelMap;
 Structure teatro;
-Structure flatPanel;
+Structure asterix;
 
 ColorNoise colorNoise;
 StripSweep stripSweep;
 
 int theFrameRate = 60;
+
+// Broadcast
+Broadcast broadcast;
+String ip = "localhost"; 
+int port = 6100;
 
 class ColorNoise extends DisplayableStrips {
   color c;
@@ -86,6 +91,85 @@ class StripSweep extends DisplayableStrips {
   }
 }
 
+class ScanLine extends DisplayableStrips {
+  ArrayList<LEDs> ledMatrix;
+  int theLength;
+  float theMin;
+  float theMax;
+  float bandwidth = 20;
+  float counter = bandwidth;
+
+  ScanLine(PixelMap pixelMap, Structure structure) {
+    super(pixelMap, structure);
+    setup();
+  }
+
+  // Create 2D map of LEDs
+
+  void setup() {
+    super.setup();
+
+    // Create LED Matrix that has a 1 to 1 ordered relationship to
+    // the LEDs in the strip
+    ledMatrix = new ArrayList<LEDs>();
+    for (Strip strip : strips) {
+      LEDs leds = new LEDs();
+
+      for (LED led : strip.leds) {
+        LED thisLed = new LED();
+        thisLed.position = led.position.get();
+        leds.add(thisLed);
+      }
+
+      ledMatrix.add(leds);
+    }
+  }
+
+  void update() {
+    pushStyle();
+    colorMode(RGB);
+    pg.beginDraw();
+    pg.loadPixels();
+    
+    
+    for (int row = 0; row < ledMatrix.size(); row++) {
+      LEDs leds = ledMatrix.get(row);
+      
+      for (int col = 0; col < leds.size(); col++) {
+        LED led = leds.get(col);
+        float y = led.position.y;
+        if (frameCount == 2)
+          println(y);
+        if (y >= counter && y <= counter + 20) {
+          led.c = color(255);
+        } else {
+          led.c = color(64);
+        }
+        pg.pixels[row * strips.getMaxStripLength() + col] = led.c;
+      }
+    }
+    pg.updatePixels();
+    pg.endDraw();
+    
+    counter += 5;
+    if (counter > 500 + bandwidth) {
+      counter = -bandwidth;
+    }
+    popStyle();
+  }
+
+  void display() {
+    pg.beginDraw();
+    for (Strip strip : strips) {
+      for (int i = 0; i < strip.nLights; i++) {
+      }
+    }
+
+    pg.endDraw();
+    super.display();
+  }
+}
+
 
 void setup() {
   frameRate(theFrameRate);
@@ -96,37 +180,46 @@ void setup() {
   loadStrips(strips, jsonFile);
   pixelMap = new PixelMap();
   teatro = new Structure(pixelMap, "../teatro.json");
-  flatPanel = new Structure(pixelMap, "../asterix.json");
+  asterix = new Structure(pixelMap, "../asterix.json");
   pixelMap.finalize();
   size(pixelMap.columns, pixelMap.rows);
 
-  
+
   colorNoise = new ColorNoise(pixelMap, teatro, color(255, 0, 128, 180));
   stripSweep = new StripSweep(pixelMap, teatro);
 
   Cel cel0 = mp.createCel(width, height);
 
-  
+
   ColorNoise cn = new ColorNoise(pixelMap, teatro, color(255, 0, 128, 180));
   PatchSet ps = new PatchSet(cn.transparency, 0.0);
   mp.seq(new ClearCels());
   mp.seq(new PushCel(cel0, pixelMap));
   mp.seq(new PushCel(cel0, cn));
+  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, teatro)));
+  //  mp.seq(new PushCel(cel0, new DisplayableStructure(pixelMap, asterix)));
   mp.seq(new Wait(120));
   mp.seq(new PushCel(cel0, new StripSweep(pixelMap, teatro)));
   mp.seq(new Wait(120));
   mp.seq(ps);
   mp.seq(new Line(120, cn.transparency, 255.0));
   mp.seq(new Wait(120));
-  mp.seq(new PushCel(cel0, new ColorNoise(pixelMap, flatPanel, color(255))));
+  mp.seq(new PushCel(cel0, new ColorNoise(pixelMap, asterix, color(255))));
   mp.seq(new Wait(120));
-  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, flatPanel)));
+  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, asterix)));
   mp.seq(new Wait(120));
+
+  // Setup Broadcasting
+  broadcast = new Broadcast(this, pixelMap, ip, port);  // Set up broadcast
+  broadcast.pg = g;                                     // Broadcast global canvas instead of PixelMap
 }
 
 void draw() {
   background(0);
   mp.update();
   mp.display();
+
+  // Broadcast to simulator  
+  broadcast.send();
 }
 

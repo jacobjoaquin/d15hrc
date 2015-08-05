@@ -1,4 +1,14 @@
 class Strips extends ArrayList<Strip> {
+  int getMaxStripLength() {
+    int L = 0;
+    int stripSize = size();
+    for (Strip strip : this) {
+      if (strip.nLights > 0) {
+        L = strip.nLights;
+      }
+    }
+    return L;
+  }
 }
 
 class Strip {

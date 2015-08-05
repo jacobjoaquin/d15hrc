@@ -1,7 +1,7 @@
 class Structure {
   PixelMap pixelMap;
   String filename;
-  ArrayList<Strip> strips;
+  Strips strips;
   int rowOffset = 0;
 
   Structure(PixelMap pixelMap, String filename) {
@@ -11,7 +11,7 @@ class Structure {
   }  
 
   void setup() {
-    strips = new ArrayList<Strip>();    
+    strips = new Strips();    
     loadFromJSON(filename);
     rowOffset = pixelMap.rows;
     this.pixelMap.addStrips(strips);

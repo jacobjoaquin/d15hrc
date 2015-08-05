@@ -69,6 +69,7 @@ void pixelMapToStrips(PixelMap pixelMap, Strips strips) {
     for (int col = 0; col < cols; col++) {
       LED led = lights.get(col);
       led.c = pg.pixels[rowOffset + col];
+//      led.c = color(255, 64, 128);
     }
   }
 }
