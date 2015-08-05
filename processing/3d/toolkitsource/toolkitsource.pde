@@ -96,7 +96,8 @@ class ScanLine extends DisplayableLEDs {
   int theLength;
   float theMin;
   float theMax;
-  float bandwidth = 100;
+  float bandwidth = 400;
+  float speed = 5;
   float counter = bandwidth;
 
   ScanLine(PixelMap pixelMap, Structure structure) {
@@ -109,15 +110,15 @@ class ScanLine extends DisplayableLEDs {
         float y = led.position.y;
         if (y >= counter - bandwidth / 2.0 && y <= counter + bandwidth / 2.0) {
           float d = abs(y - counter);
-          led.c = lerpColor(color(255), color(0, 0), d / (bandwidth / 2.0));
+          led.c = lerpColor(color(255), color(255, 80, 180, 0), d / (bandwidth / 2.0));
         } else {
           led.c = color(0, 0);
         }
     }
 
-    counter += 5;
-    if (counter > inchesToCM(21 * 12) + bandwidth) {
-      counter = -bandwidth;
+    counter += speed;
+    if (counter > inchesToCM(21 * 12) + bandwidth / 2.0) {
+      counter = -bandwidth / 2.0;
     }
     
     super.update();
