@@ -43,16 +43,21 @@ class Broadcast {
     for (int i = 0; i < nPixels; i++) {
       int offset = i * 3 + 1;
       int c = pg.pixels[i];
-      
+
       buffer[offset] = byte((c >> 16) & 0xFF);     // Red 
       buffer[offset + 1] = byte((c >> 8) & 0xFF);  // Blue
       buffer[offset + 2] = byte(c & 0xFF);         // Green
     }
     send();
   }
-  
+
   void send() {
-    udp.send(buffer, ip, port);
+    try {
+      udp.send(buffer, ip, port);
+    }
+    catch (Exception e) {
+      println("frame: " + frameCount + "  Broadcast frame dropped");
+    }
   }
 }
 
@@ -92,7 +97,7 @@ class BroadcastReceiver {
     if (data.length != bufferSize || data[0] != 1) {
       return;
     }
-    
+
     pg.loadPixels();
 
     for (int i = 0; i < nPixels; i++) {

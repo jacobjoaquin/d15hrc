@@ -98,6 +98,7 @@ class ScanLine extends DisplayableStrips {
   float theMax;
   float bandwidth = 20;
   float counter = bandwidth;
+  LEDs allLEDs;
 
   ScanLine(PixelMap pixelMap, Structure structure) {
     super(pixelMap, structure);
@@ -109,6 +110,8 @@ class ScanLine extends DisplayableStrips {
   void setup() {
     super.setup();
 
+    allLEDs = new LEDs();
+
     // Create LED Matrix that has a 1 to 1 ordered relationship to
     // the LEDs in the strip
     ledMatrix = new ArrayList<LEDs>();
@@ -119,10 +122,11 @@ class ScanLine extends DisplayableStrips {
         LED thisLed = new LED();
         thisLed.position = led.position.get();
         leds.add(thisLed);
+        allLEDs.add(thisLed);
       }
 
       ledMatrix.add(leds);
-    }
+    }    
   }
 
   void update() {
@@ -130,20 +134,24 @@ class ScanLine extends DisplayableStrips {
     pg.clear();
     pg.loadPixels();
 
-    for (int row = 0; row < ledMatrix.size (); row++) {
-      LEDs leds = ledMatrix.get(row);
-
-      for (int col = 0; col < leds.size (); col++) {
-        LED led = leds.get(col);
+    for (LED led : allLEDs) {
         float y = led.position.y;
         if (y >= counter && y <= counter + 20) {
           led.c = color(255);
         } else {
           led.c = color(0, 0, 0, 0);
         }
+    }
+
+    for (int row = 0; row < ledMatrix.size(); row++) {
+      LEDs leds = ledMatrix.get(row);
+      for (int col = 0; col < leds.size (); col++) {
+        LED led = leds.get(col);
         pg.pixels[row * strips.getMaxStripLength() + col] = led.c;
       }
     }
+    
+    
     pg.updatePixels();
     pg.endDraw();
 
@@ -168,26 +176,20 @@ class ScanLine extends DisplayableStrips {
 
 void setup() {
   size(135, 108, P2D);
-//  int waitTime = millis() + 1000;
-//  while (millis() < waitTime) {
-//  }
-  
   frameRate(theFrameRate);
+
   Strips strips = new Strips();
-
-  mp = new Moonpaper(this);
-
-  loadStrips(strips, jsonFile);
-  pixelMap = new PixelMap();
   PGraphics loadTransformation = createGraphics(1, 1, P3D);
 
+  mp = new Moonpaper(this);
+  loadStrips(strips, jsonFile);
+  pixelMap = new PixelMap();
   teatro = new Structure(pixelMap, "../teatro.json");
   loadTransformation.pushMatrix();
   loadTransformation.scale(1, -1, 1);
   asterix = new Structure(pixelMap, "../asterix.json", loadTransformation);
   loadTransformation.popMatrix();
   pixelMap.finalize();
-
 
   // Do animations
   Cel cel0 = mp.createCel(width, height);
@@ -198,9 +200,8 @@ void setup() {
   mp.seq(new PushCel(cel0, pixelMap));
   mp.seq(new PushCel(cel0, cn));
   mp.seq(new PushCel(cel0, new ScanLine(pixelMap, asterix)));
-  //  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, asterix)));
-  //  mp.seq(new PushCel(cel0, new DisplayableStructure(pixelMap, asterix)));
-  mp.seq(new Wait(240));
+  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, teatro)));
+  mp.seq(new Wait(60 * 60));
   mp.seq(new PushCel(cel0, new StripSweep(pixelMap, teatro)));
   mp.seq(new Wait(120));
   mp.seq(ps);
@@ -222,5 +223,5 @@ void draw() {
   mp.display();
 
   // Broadcast to simulator
-  broadcast.update();  
+  broadcast.update();
 }
