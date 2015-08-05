@@ -91,85 +91,36 @@ class StripSweep extends DisplayableStrips {
   }
 }
 
-class ScanLine extends DisplayableStrips {
-  ArrayList<LEDs> ledMatrix;
+class ScanLine extends DisplayableLEDs {
+
   int theLength;
   float theMin;
   float theMax;
-  float bandwidth = 20;
+  float bandwidth = 100;
   float counter = bandwidth;
-  LEDs allLEDs;
 
   ScanLine(PixelMap pixelMap, Structure structure) {
     super(pixelMap, structure);
     setup();
   }
 
-  // Create 2D map of LEDs
-
-  void setup() {
-    super.setup();
-
-    allLEDs = new LEDs();
-
-    // Create LED Matrix that has a 1 to 1 ordered relationship to
-    // the LEDs in the strip
-    ledMatrix = new ArrayList<LEDs>();
-    for (Strip strip : strips) {
-      LEDs leds = new LEDs();
-
-      for (LED led : strip.leds) {
-        LED thisLed = new LED();
-        thisLed.position = led.position.get();
-        leds.add(thisLed);
-        allLEDs.add(thisLed);
-      }
-
-      ledMatrix.add(leds);
-    }    
-  }
-
   void update() {
-    pg.beginDraw();
-    pg.clear();
-    pg.loadPixels();
-
-    for (LED led : allLEDs) {
+    for (LED led : leds) {
         float y = led.position.y;
-        if (y >= counter && y <= counter + 20) {
-          led.c = color(255);
+        if (y >= counter - bandwidth / 2.0 && y <= counter + bandwidth / 2.0) {
+          float d = abs(y - counter);
+          led.c = lerpColor(color(255), color(0, 0), d / (bandwidth / 2.0));
         } else {
-          led.c = color(0, 0, 0, 0);
+          led.c = color(0, 0);
         }
     }
-
-    for (int row = 0; row < ledMatrix.size(); row++) {
-      LEDs leds = ledMatrix.get(row);
-      for (int col = 0; col < leds.size (); col++) {
-        LED led = leds.get(col);
-        pg.pixels[row * strips.getMaxStripLength() + col] = led.c;
-      }
-    }
-    
-    
-    pg.updatePixels();
-    pg.endDraw();
 
     counter += 5;
     if (counter > inchesToCM(21 * 12) + bandwidth) {
       counter = -bandwidth;
     }
-  }
-
-  void display() {
-    pg.beginDraw();
-    for (Strip strip : strips) {
-      for (int i = 0; i < strip.nLights; i++) {
-      }
-    }
-
-    pg.endDraw();
-    super.display();
+    
+    super.update();
   }
 }
 

@@ -37,6 +37,7 @@ class Broadcast {
   }
 
   void update() {
+    try {
     pg.loadPixels();
     buffer[0] = 1;  // Header. Always 1.
 
@@ -48,6 +49,10 @@ class Broadcast {
       buffer[offset + 1] = byte((c >> 8) & 0xFF);  // Blue
       buffer[offset + 2] = byte(c & 0xFF);         // Green
     }
+    }
+    catch (Exception e) {
+      println("frame: " + frameCount + "  Broadcast.update() frame dropped");
+    }
     send();
   }
 
@@ -56,7 +61,7 @@ class Broadcast {
       udp.send(buffer, ip, port);
     }
     catch (Exception e) {
-      println("frame: " + frameCount + "  Broadcast frame dropped");
+      println("frame: " + frameCount + "  Broadcast.send() frame dropped");
     }
   }
 }
