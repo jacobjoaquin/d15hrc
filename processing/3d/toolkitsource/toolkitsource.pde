@@ -29,7 +29,8 @@ class ColorNoise extends DisplayableStrips {
 
   void update() {
     pg.beginDraw();
-    pg.background(0);
+    pg.clear();
+    //    pg.rect(0, 0, pg.width, pg.height);
     pg.loadPixels();
     for (int i = 0; i < 1000; i++) {
       int r = int(random(pg.height));
@@ -107,23 +108,62 @@ class ScanLine extends DisplayableLEDs {
 
   void update() {
     for (LED led : leds) {
-        float y = led.position.y;
-        if (y >= counter - bandwidth / 2.0 && y <= counter + bandwidth / 2.0) {
-          float d = abs(y - counter);
-          led.c = lerpColor(color(255), color(255, 80, 180, 0), d / (bandwidth / 2.0));
-        } else {
-          led.c = color(0, 0);
-        }
+      float y = led.position.y;
+      if (y >= counter - bandwidth / 2.0 && y <= counter + bandwidth / 2.0) {
+        float d = abs(y - counter);
+        led.c = lerpColor(color(255), color(255, 80, 180, 0), d / (bandwidth / 2.0));
+      } else {
+        led.c = color(0, 0);
+      }
     }
 
     counter += speed;
     if (counter > inchesToCM(21 * 12) + bandwidth / 2.0) {
       counter = -bandwidth / 2.0;
     }
-    
+
     super.update();
   }
 }
+
+
+class GradientStrips extends DisplayableStrips {
+  GradientStrips(PixelMap pixelMap, Structure structure) {
+    super(pixelMap, structure);
+  }
+  
+  void display() {
+    pg.beginDraw();
+    pg.clear();
+    pg.loadPixels();
+    for (int row = 0; row < pg.height; row++) {
+      //      StripAnimation animation = animations.get(row);
+      Strip strip = strips.get(row);
+      for (int col = 0; col < strip.nLights; col++) {
+        pg.pixels[row * pg.width + col] = lerpColor(color(255, 0, 0), color(0, 0, 255), col / float(strip.nLights));
+      }
+    }
+
+    pg.updatePixels();
+    pg.endDraw();
+    super.display();
+  }
+}
+
+class GradientLEDs extends DisplayableLEDs {
+  GradientLEDs(PixelMap pixelMap, Structure structure) {
+    super(pixelMap, structure);
+  }
+  
+  void update() {  
+    for (int i = 0; i < leds.size(); i++) {
+      LED led = leds.get(i);
+      led.c = lerpColor(color(255, 0, 0), color(0, 0, 255), i / float(leds.size())); 
+    }
+    super.update();
+  }
+}
+
 
 
 void setup() {
@@ -137,10 +177,16 @@ void setup() {
   loadStrips(strips, jsonFile);
   pixelMap = new PixelMap();
   teatro = new Structure(pixelMap, "../teatro.json");
-  loadTransformation.pushMatrix();
-  loadTransformation.scale(1, -1, 1);
-  asterix = new Structure(pixelMap, "../asterix.json", loadTransformation);
-  loadTransformation.popMatrix();
+  //  loadTransformation.pushMatrix();
+  //  loadTransformation.scale(1, -1, 1);
+  //  asterix = new Structure(pixelMap, "../asterix.json", loadTransformation);
+  asterix = new Structure(pixelMap, "../asterix.json");
+  for (Strip strip : asterix.strips) {
+    for (LED led : strip.leds) {
+      led.position.y *= -1;
+    }
+  }
+  //  loadTransformation.popMatrix();
   pixelMap.finalize();
 
   // Do animations
@@ -150,19 +196,22 @@ void setup() {
   PatchSet ps = new PatchSet(cn.transparency, 0.0);
   mp.seq(new ClearCels());
   mp.seq(new PushCel(cel0, pixelMap));
-  mp.seq(new PushCel(cel0, cn));
-  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, asterix)));
-  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, teatro)));
-  mp.seq(new Wait(60 * 60));
-  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, teatro)));
+//  mp.seq(new PushCel(cel0, new GradientStrips(pixelMap, asterix)));
+  mp.seq(new PushCel(cel0, new GradientLEDs(pixelMap, asterix)));
   mp.seq(new Wait(120));
-  mp.seq(ps);
-  mp.seq(new Line(120, cn.transparency, 255.0));
-  mp.seq(new Wait(120));
-  mp.seq(new PushCel(cel0, new ColorNoise(pixelMap, asterix, color(255))));
-  mp.seq(new Wait(120));
-  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, asterix)));
-  mp.seq(new Wait(120));
+//  mp.seq(new PushCel(cel0, cn));
+//  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, asterix)));
+//  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, teatro)));
+//  mp.seq(new Wait(120));
+//  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, teatro)));
+//  mp.seq(new Wait(120));
+//  mp.seq(ps);
+//  mp.seq(new Line(120, cn.transparency, 255.0));
+//  mp.seq(new Wait(120));
+//  mp.seq(new PushCel(cel0, new ColorNoise(pixelMap, asterix, color(255))));
+//  mp.seq(new Wait(120));
+//  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, asterix)));
+//  mp.seq(new Wait(120));
 
   // Setup Broadcasting
   broadcast = new Broadcast(this, pixelMap, ip, port);  // Set up broadcast
@@ -177,3 +226,4 @@ void draw() {
   // Broadcast to simulator
   broadcast.update();
 }
+

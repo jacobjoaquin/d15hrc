@@ -36,20 +36,33 @@ class Broadcast {
     udp.listen(false);
   }
 
-  void send() {
+  void update() {
+    try {
+    pg.loadPixels();
     buffer[0] = 1;  // Header. Always 1.
 
-    pg.loadPixels();
     for (int i = 0; i < nPixels; i++) {
       int offset = i * 3 + 1;
       int c = pg.pixels[i];
-      
+
       buffer[offset] = byte((c >> 16) & 0xFF);     // Red 
       buffer[offset + 1] = byte((c >> 8) & 0xFF);  // Blue
       buffer[offset + 2] = byte(c & 0xFF);         // Green
     }
+    }
+    catch (Exception e) {
+      println("frame: " + frameCount + "  Broadcast.update() frame dropped");
+    }
+    send();
+  }
 
-    udp.send(buffer, ip, port);
+  void send() {
+    try {
+      udp.send(buffer, ip, port);
+    }
+    catch (Exception e) {
+      println("frame: " + frameCount + "  Broadcast.send() frame dropped");
+    }
   }
 }
 
@@ -89,7 +102,7 @@ class BroadcastReceiver {
     if (data.length != bufferSize || data[0] != 1) {
       return;
     }
-    
+
     pg.loadPixels();
 
     for (int i = 0; i < nPixels; i++) {
@@ -115,7 +128,7 @@ class DisplayableStructure extends Displayable {
   PGraphics pg;            // Portion of structure, initialized in child
   Patchable<Integer> theBlendMode;
   Patchable<Float> transparency;
-  
+
   DisplayableStructure(PixelMap pixelMap, Structure structure) {
     this.pixelMap = pixelMap;
     this.structure = structure;
@@ -126,14 +139,14 @@ class DisplayableStructure extends Displayable {
 }
 
 class DisplayableStrips extends DisplayableStructure {
-  ArrayList<Strip> strips;
+  Strips strips;
   int rowOffset;
 
   DisplayableStrips(PixelMap pixelMap, Structure structure) {
     super(pixelMap, structure);
     setup();
   }
-  
+
   void setup() {
     rowOffset = structure.rowOffset;
     strips = structure.strips;
@@ -145,9 +158,73 @@ class DisplayableStrips extends DisplayableStructure {
     pixelMapPG.blendMode(theBlendMode.value());
     pixelMapPG.tint(255, transparency.value());
     pixelMapPG.image(pg, 0, rowOffset);
-    pixelMapPG.endDraw();    
+    pixelMapPG.endDraw();
   }
 }
+
+class DisplayableLEDs extends DisplayableStrips {
+  ArrayList<LEDs> ledMatrix;
+  LEDs leds;
+  int maxStripLength;
+
+  DisplayableLEDs(PixelMap pixelMap, Structure structure) {
+    super(pixelMap, structure);
+    setup();
+  }
+
+  void setup() {
+    super.setup();
+    leds = new LEDs();
+    maxStripLength = strips.getMaxStripLength();
+
+    // Create LED Matrix that has a 1 to 1 ordered relationship to
+    // the LEDs in the strip
+    ledMatrix = new ArrayList<LEDs>();
+    for (Strip strip : strips) {
+      LEDs stripLeds = new LEDs();
+
+      for (LED led : strip.leds) {
+        LED thisLed = new LED();
+        thisLed.position = led.position.get();
+        stripLeds.add(thisLed);
+        leds.add(thisLed);
+      }
+
+      ledMatrix.add(stripLeds);
+    }
+  }
+
+  void update() {
+    pg.beginDraw();
+    pg.clear();
+    pg.loadPixels();
+
+    int nRows = ledMatrix.size();
+
+    for (int row = 0; row < nRows; row++) {
+      LEDs stripLeds = ledMatrix.get(row);
+      int nCols = stripLeds.size();
+      int rowOffset = row * maxStripLength;
+
+      for (int col = 0; col < nCols; col++) {
+        LED led = stripLeds.get(col);
+        pg.pixels[rowOffset + col] = led.c;
+        
+        float original = strips.get(row).leds.get(col).position.y;
+        float internal = led.position.y;
+        
+        if (original != internal)
+          println(original + ", " + internal);
+      }
+    }
+
+
+
+    pg.updatePixels();
+    pg.endDraw();
+  }
+}
+
 void loadStrips(Strips strips, String filename) {
   JSONArray values = loadJSONArray(filename);
   int nValues = values.size();
@@ -220,9 +297,17 @@ void writeJSONStrips(Strips strips, String saveAs) {
   println(values);
   saveJSONArray(values, saveAs);
 }
+class LEDs extends ArrayList<LED> {
+}
+
 class LED {
   PVector position;
   color c;
+ 
+  LED() {
+    this.position = new PVector();
+    c = color(0);
+  }
 
   LED(PVector position) {
     this.position = position;
@@ -235,7 +320,7 @@ import moonpaper.*;
 // PixelMap.createPartialStructe()
 
 class PixelMap extends Displayable {
-  ArrayList<Strip> strips;
+  Strips strips;
   ArrayList<LED> leds;
   int rows = 0;
   int columns;
@@ -243,16 +328,16 @@ class PixelMap extends Displayable {
   int nLights;
 
   PixelMap() {
-    strips = new ArrayList<Strip>();
+    strips = new Strips();
   }
 
-  void addStrips(ArrayList<Strip> theStrips) {
+  void addStrips(Strips theStrips) {
     strips.addAll(theStrips);
     rows += theStrips.size();
   }
 
   void finalize() {
-    leds = new ArrayList<LED>();
+    leds = new LEDs();
     columns = 0;
 
     for (Strip strip : strips) {
@@ -300,6 +385,16 @@ class PixelMap extends Displayable {
   }
 }
 class Strips extends ArrayList<Strip> {
+  int getMaxStripLength() {
+    int L = 0;
+    int stripSize = size();
+    for (Strip strip : this) {
+      if (strip.nLights > 0) {
+        L = strip.nLights;
+      }
+    }
+    return L;
+  }
 }
 
 class Strip {
@@ -328,17 +423,26 @@ class Strip {
 class Structure {
   PixelMap pixelMap;
   String filename;
-  ArrayList<Strip> strips;
+  Strips strips;
   int rowOffset = 0;
+  PGraphics loadTransformation;
 
   Structure(PixelMap pixelMap, String filename) {
     this.pixelMap = pixelMap;
     this.filename = filename;
+    loadTransformation = createGraphics(1, 1, P3D);
+    setup();
+  }  
+
+  Structure(PixelMap pixelMap, String filename, PGraphics loadTransformation) {
+    this.pixelMap = pixelMap;
+    this.filename = filename;
+    this.loadTransformation = loadTransformation;
     setup();
   }  
 
   void setup() {
-    strips = new ArrayList<Strip>();    
+    strips = new Strips();    
     loadFromJSON(filename);
     rowOffset = pixelMap.rows;
     this.pixelMap.addStrips(strips);
@@ -355,8 +459,26 @@ class Structure {
       int nLights = data.getInt("numberOfLights");
       JSONArray startPoint = data.getJSONArray("startPoint");
       JSONArray endPoint = data.getJSONArray("endPoint");
-      PVector p1 = new PVector(startPoint.getInt(0), startPoint.getInt(1), startPoint.getInt(2));
-      PVector p2 = new PVector(endPoint.getInt(0), endPoint.getInt(1), endPoint.getInt(2));
+
+      float x1 = startPoint.getInt(0);
+      float y1 = startPoint.getInt(1);
+      float z1 = startPoint.getInt(2);
+      float x2 = endPoint.getInt(0);
+      float y2 = endPoint.getInt(1);
+      float z2 = endPoint.getInt(2);
+      float x3 = loadTransformation.modelX(x1, y1, z1); 
+      float y3 = loadTransformation.modelY(x1, y1, z1); 
+      float z3 = loadTransformation.modelZ(x1, y1, z1); 
+      float x4 = loadTransformation.modelX(x2, y2, z2); 
+      float y4 = loadTransformation.modelY(x2, y2, z2); 
+      float z4 = loadTransformation.modelZ(x2, y2, z2); 
+
+
+//      PVector p1 = new PVector(startPoint.getInt(0), startPoint.getInt(1), startPoint.getInt(2));
+//      PVector p2 = new PVector(endPoint.getInt(0), endPoint.getInt(1), endPoint.getInt(2));
+      PVector p1 = new PVector(x3, y3, z3);
+      PVector p2 = new PVector(x4, y4, z4);
+
       strips.add(new Strip(p1, p2, density));
     }
   }
@@ -365,21 +487,20 @@ class Structure {
     int w = 0;
     for (Strip strip : strips) {
       int size = strip.nLights;
-      
+
       if (size > w) {
         w = size;
       }
     }
     return w;
   }
-  
+
   // getBox
   // getHeight
   // getDepth
   // getXBoundaries
   // etc...
 }
-
 // Distance between two PVectors
 float dist(PVector p1, PVector p2) {
   return dist(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);

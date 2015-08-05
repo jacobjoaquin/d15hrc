@@ -3,7 +3,7 @@ class Strips extends ArrayList<Strip> {
     int L = 0;
     int stripSize = size();
     for (Strip strip : this) {
-      if (strip.nLights > 0) {
+      if (strip.nLights > L) {
         L = strip.nLights;
       }
     }

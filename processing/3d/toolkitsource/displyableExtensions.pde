@@ -43,10 +43,10 @@ class DisplayableLEDs extends DisplayableStrips {
   ArrayList<LEDs> ledMatrix;
   LEDs leds;
   int maxStripLength;
-  
+
   DisplayableLEDs(PixelMap pixelMap, Structure structure) {
     super(pixelMap, structure);
-    setup();
+    //    setup();
   }
 
   void setup() {
@@ -57,11 +57,17 @@ class DisplayableLEDs extends DisplayableStrips {
     // Create LED Matrix that has a 1 to 1 ordered relationship to
     // the LEDs in the strip
     ledMatrix = new ArrayList<LEDs>();
-    for (Strip strip : strips) {
+    int nRows = strips.size();
+
+    for (int row = 0; row < nRows; row++) {
+      Strip strip = strips.get(row);
+      int nCols = strip.nLights;
       LEDs stripLeds = new LEDs();
 
-      for (LED led : strip.leds) {
+      for (int col = 0; col < nCols; col++) {
         LED thisLed = new LED();
+        LED led = strip.leds.get(col);
+
         thisLed.position = led.position.get();
         stripLeds.add(thisLed);
         leds.add(thisLed);
@@ -77,19 +83,20 @@ class DisplayableLEDs extends DisplayableStrips {
     pg.loadPixels();
 
     int nRows = ledMatrix.size();
-    
+
     for (int row = 0; row < nRows; row++) {
       LEDs stripLeds = ledMatrix.get(row);
       int nCols = stripLeds.size();
       int rowOffset = row * maxStripLength;
-      
-      for (int col = 0; col < nCols; col++) {
+
+      for (int col = 0; col < nCols - 10; col++) {
         LED led = stripLeds.get(col);
         pg.pixels[rowOffset + col] = led.c;
       }
     }
-
+    
     pg.updatePixels();
     pg.endDraw();
   }
 }
+
