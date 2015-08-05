@@ -36,10 +36,10 @@ class Broadcast {
     udp.listen(false);
   }
 
-  void send() {
+  void update() {
+    pg.loadPixels();
     buffer[0] = 1;  // Header. Always 1.
 
-    pg.loadPixels();
     for (int i = 0; i < nPixels; i++) {
       int offset = i * 3 + 1;
       int c = pg.pixels[i];
@@ -48,6 +48,10 @@ class Broadcast {
       buffer[offset + 1] = byte((c >> 8) & 0xFF);  // Blue
       buffer[offset + 2] = byte(c & 0xFF);         // Green
     }
+    send();
+  }
+  
+  void send() {
     udp.send(buffer, ip, port);
   }
 }

@@ -221,6 +221,6 @@ void draw() {
   mp.update();
   mp.display();
 
-  // Broadcast to simulator  
-  broadcast.send();
+  // Broadcast to simulator
+  broadcast.update();  
 }
