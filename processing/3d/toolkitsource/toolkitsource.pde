@@ -95,8 +95,8 @@ void setup() {
 
   loadStrips(strips, jsonFile);
   pixelMap = new PixelMap();
-  teatro = new Structure(pixelMap, jsonFile);
-  flatPanel = new Structure(pixelMap, "flatpanel.json");
+  teatro = new Structure(pixelMap, "../teatro.json");
+  flatPanel = new Structure(pixelMap, "../asterix.json");
   pixelMap.finalize();
   size(pixelMap.columns, pixelMap.rows);
 
