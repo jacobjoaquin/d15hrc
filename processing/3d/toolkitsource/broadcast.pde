@@ -48,7 +48,6 @@ class Broadcast {
       buffer[offset + 1] = byte((c >> 8) & 0xFF);  // Blue
       buffer[offset + 2] = byte(c & 0xFF);         // Green
     }
-
     udp.send(buffer, ip, port);
   }
 }
