@@ -89,7 +89,7 @@ class DisplayableLEDs extends DisplayableStrips {
       int nCols = stripLeds.size();
       int rowOffset = row * maxStripLength;
 
-      for (int col = 0; col < nCols - 10; col++) {
+      for (int col = 0; col < nCols; col++) {
         LED led = stripLeds.get(col);
         pg.pixels[rowOffset + col] = led.c;
       }

@@ -28,6 +28,7 @@ void drawPlane() {
 
 void setup() {
   size(640, 480, P3D);
+  frameRate(60);
 
   // Setup Virtual Installation  
   strips = new Strips();
@@ -36,21 +37,27 @@ void setup() {
   Strips teatro = new Strips();
   loadStrips(teatro, "../teatro.json");
   strips.addAll(teatro);
-  
+
   // Load asterix
   pushMatrix();
-  scale(1, -1, 1);
+  //  scale(1, -1, 1);
   translate(0, 0, -2000);
   Strips asterix = new Strips();
   loadStrips(asterix, "../asterix.json");
+  for (Strip strip : asterix) {
+    for (LED led : strip.leds) {
+      led.position.y *= -1;
+    }
+  }
+
   popMatrix();
   strips.addAll(asterix);
-  
+
   // Generate PixelMap
   pixelMap = new PixelMap();
   pixelMap.addStrips(strips);
   pixelMap.finalize();
-  
+
   // Receiver
   broadcastReceiver = new BroadcastReceiver(this, pixelMap, ip, port);
 }
@@ -69,7 +76,7 @@ void pixelMapToStrips(PixelMap pixelMap, Strips strips) {
     for (int col = 0; col < cols; col++) {
       LED led = lights.get(col);
       led.c = pg.pixels[rowOffset + col];
-//      led.c = color(255, 64, 128);
+      //      led.c = color(255, 64, 128);
     }
   }
 }
@@ -111,3 +118,4 @@ void draw() {
 
   popMatrix();
 }
+

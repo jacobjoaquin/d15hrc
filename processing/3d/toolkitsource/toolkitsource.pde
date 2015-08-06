@@ -97,8 +97,8 @@ class ScanLine extends DisplayableLEDs {
   int theLength;
   float theMin;
   float theMax;
-  float bandwidth = 400;
-  float speed = 5;
+  float bandwidth = 100;
+  float speed = 10;
   float counter = bandwidth;
 
   ScanLine(PixelMap pixelMap, Structure structure) {
@@ -197,21 +197,21 @@ void setup() {
   mp.seq(new ClearCels());
   mp.seq(new PushCel(cel0, pixelMap));
 //  mp.seq(new PushCel(cel0, new GradientStrips(pixelMap, asterix)));
-  mp.seq(new PushCel(cel0, new GradientLEDs(pixelMap, asterix)));
+//  mp.seq(new PushCel(cel0, new GradientLEDs(pixelMap, asterix)));
+//  mp.seq(new Wait(120));
+  mp.seq(new PushCel(cel0, cn));
+  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, asterix)));
+  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, teatro)));
   mp.seq(new Wait(120));
-//  mp.seq(new PushCel(cel0, cn));
-//  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, asterix)));
-//  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, teatro)));
-//  mp.seq(new Wait(120));
-//  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, teatro)));
-//  mp.seq(new Wait(120));
-//  mp.seq(ps);
-//  mp.seq(new Line(120, cn.transparency, 255.0));
-//  mp.seq(new Wait(120));
-//  mp.seq(new PushCel(cel0, new ColorNoise(pixelMap, asterix, color(255))));
-//  mp.seq(new Wait(120));
-//  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, asterix)));
-//  mp.seq(new Wait(120));
+  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, teatro)));
+  mp.seq(new Wait(120));
+  mp.seq(ps);
+  mp.seq(new Line(120, cn.transparency, 255.0));
+  mp.seq(new Wait(120));
+  mp.seq(new PushCel(cel0, new ColorNoise(pixelMap, asterix, color(255))));
+  mp.seq(new Wait(120));
+  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, asterix)));
+  mp.seq(new Wait(120));
 
   // Setup Broadcasting
   broadcast = new Broadcast(this, pixelMap, ip, port);  // Set up broadcast
