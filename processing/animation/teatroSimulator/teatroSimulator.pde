@@ -114,8 +114,8 @@ void draw() {
       popMatrix();
     }
   }
+  
   popStyle();
-
   popMatrix();
 }
 

@@ -97,7 +97,7 @@ class ScanLine extends DisplayableLEDs {
   int theLength;
   float theMin;
   float theMax;
-  float bandwidth = 100;
+  float bandwidth = 50;
   float speed = 10;
   float counter = bandwidth;
 

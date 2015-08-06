@@ -5,10 +5,14 @@ class Structure {
   int rowOffset = 0;
   PGraphics loadTransformation;
 
+  Structure(PixelMap pixelMap) {
+    this.pixelMap = pixelMap;
+  }
+
   Structure(PixelMap pixelMap, String filename) {
     this.pixelMap = pixelMap;
     this.filename = filename;
-    loadTransformation = createGraphics(1, 1, P3D);
+    loadTransformation = createGraphics(1, 1, P3D);  // P3D required to get 3D transformations
     setup();
   }  
 
@@ -38,6 +42,7 @@ class Structure {
       JSONArray startPoint = data.getJSONArray("startPoint");
       JSONArray endPoint = data.getJSONArray("endPoint");
 
+      // Apply transformations
       float x1 = startPoint.getInt(0);
       float y1 = startPoint.getInt(1);
       float z1 = startPoint.getInt(2);
@@ -51,9 +56,6 @@ class Structure {
       float y4 = loadTransformation.modelY(x2, y2, z2); 
       float z4 = loadTransformation.modelZ(x2, y2, z2); 
 
-
-//      PVector p1 = new PVector(startPoint.getInt(0), startPoint.getInt(1), startPoint.getInt(2));
-//      PVector p2 = new PVector(endPoint.getInt(0), endPoint.getInt(1), endPoint.getInt(2));
       PVector p1 = new PVector(x3, y3, z3);
       PVector p2 = new PVector(x4, y4, z4);
 
@@ -72,10 +74,11 @@ class Structure {
     }
     return w;
   }
-
+  
   // getBox
   // getHeight
   // getDepth
   // getXBoundaries
   // etc...
 }
+
