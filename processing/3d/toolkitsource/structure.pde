@@ -1,3 +1,6 @@
+class Structures extends ArrayList<Structure> {
+}
+
 class Structure {
   PixelMap pixelMap;
   String filename;
@@ -82,3 +85,10 @@ class Structure {
   // etc...
 }
 
+class ComboStructure extends Structure {
+  
+  
+  ComboStructure(PixelMap pixelMap, Structures structures) {
+    super(pixelMap);
+  }
+}

@@ -93,13 +93,11 @@ class StripSweep extends DisplayableStrips {
 }
 
 class ScanLine extends DisplayableLEDs {
-
-  int theLength;
-  float theMin;
-  float theMax;
-  float bandwidth = 50;
-  float speed = 10;
-  float counter = bandwidth;
+  Patchable<Float> bandwidth = new Patchable<Float>(50.0);
+  Patchable<Float> speed = new Patchable<Float>(1.0);
+  Patchable<Integer> color1 = new Patchable<Integer>(color(255));
+  Patchable<Integer> color2 = new Patchable<Integer>(color(255, 0, 0, 0));
+  float counter = -bandwidth.value() / 2.0;
 
   ScanLine(PixelMap pixelMap, Structure structure) {
     super(pixelMap, structure);
@@ -107,19 +105,25 @@ class ScanLine extends DisplayableLEDs {
   }
 
   void update() {
+    float bDiv2 = bandwidth.value() / 2.0;
+    color c1 = color1.value();
+    color c2 = color2.value();
     for (LED led : leds) {
       float y = led.position.y;
-      if (y >= counter - bandwidth / 2.0 && y <= counter + bandwidth / 2.0) {
+      if (y >= counter - bDiv2 && y <= counter + bDiv2) {
         float d = abs(y - counter);
-        led.c = lerpColor(color(255), color(255, 80, 180, 0), d / (bandwidth / 2.0));
+        led.c = lerpColor(c1, c2, d / bDiv2);
       } else {
         led.c = color(0, 0);
       }
     }
 
-    counter += speed;
-    if (counter > inchesToCM(21 * 12) + bandwidth / 2.0) {
-      counter = -bandwidth / 2.0;
+    counter += speed.value();
+    if (counter > inchesToCM(21 * 12) + bDiv2) {
+      counter = -bDiv2;
+    }
+    else if (counter <= - bDiv2) {
+      counter = inchesToCM(21 * 12);
     }
 
     super.update();
@@ -200,18 +204,55 @@ void setup() {
 //  mp.seq(new PushCel(cel0, new GradientLEDs(pixelMap, asterix)));
 //  mp.seq(new Wait(120));
   mp.seq(new PushCel(cel0, cn));
-  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, asterix)));
-  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, teatro)));
+  
+  
+  
+  ScanLine a1 = new ScanLine(pixelMap, asterix);
+  ScanLine a2 = new ScanLine(pixelMap, asterix);
+  ScanLine t1 = new ScanLine(pixelMap, teatro);
+  ScanLine t2 = new ScanLine(pixelMap, teatro);
+  mp.seq(new PushCel(cel0, a1));
+  mp.seq(new PushCel(cel0, t1));
+  mp.seq(new PushCel(cel0, a2));
+  mp.seq(new PushCel(cel0, t2));
+  mp.seq(new PatchSet(a1.speed, 1.0));
+  mp.seq(new PatchSet(t1.speed, 1.0));
+  mp.seq(new PatchSet(a2.speed, -1.0));
+  mp.seq(new PatchSet(t2.speed, -1.0));
+
+    
   mp.seq(new Wait(120));
+  
+  mp.seq(new Line(120, a1.speed, 10));
+  mp.seq(new Line(120, t1.speed, 10));
+  mp.seq(new Line(120, a1.bandwidth, 400));
+  mp.seq(new Line(120, t1.bandwidth, 400));
+  
+  mp.seq(new Wait(240));
+
+  mp.seq(new Line(120, a1.speed, 1));
+  mp.seq(new Line(120, t1.speed, 1));
+  mp.seq(new Line(120, a1.bandwidth, 50));
+  mp.seq(new Line(120, t1.bandwidth, 50));
+
+  mp.seq(new Wait(240));
+
+  
+  mp.seq(new PatchSet(a1.speed, 1.0));
+  mp.seq(new PatchSet(t1.speed, 1.0));
+  mp.seq(new PatchSet(a1.bandwidth, 50.0));
+  mp.seq(new PatchSet(t1.bandwidth, 50.0));
+
+  
   mp.seq(new PushCel(cel0, new StripSweep(pixelMap, teatro)));
   mp.seq(new Wait(120));
   mp.seq(ps);
   mp.seq(new Line(120, cn.transparency, 255.0));
   mp.seq(new Wait(120));
-  mp.seq(new PushCel(cel0, new ColorNoise(pixelMap, asterix, color(255))));
-  mp.seq(new Wait(120));
-  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, asterix)));
-  mp.seq(new Wait(120));
+//  mp.seq(new PushCel(cel0, new ColorNoise(pixelMap, asterix, color(255))));
+//  mp.seq(new Wait(120));
+//  mp.seq(new PushCel(cel0, new StripSweep(pixelMap, asterix)));
+//  mp.seq(new Wait(120));
 
   // Setup Broadcasting
   broadcast = new Broadcast(this, pixelMap, ip, port);  // Set up broadcast

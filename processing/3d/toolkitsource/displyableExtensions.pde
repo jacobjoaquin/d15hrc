@@ -39,6 +39,7 @@ class DisplayableStrips extends DisplayableStructure {
   }
 }
 
+
 class DisplayableLEDs extends DisplayableStrips {
   ArrayList<LEDs> ledMatrix;
   LEDs leds;
