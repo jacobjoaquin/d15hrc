@@ -96,7 +96,7 @@ class ScanLine extends DisplayableLEDs {
   Patchable<Float> bandwidth = new Patchable<Float>(50.0);
   Patchable<Float> speed = new Patchable<Float>(1.0);
   Patchable<Integer> color1 = new Patchable<Integer>(color(255));
-  Patchable<Integer> color2 = new Patchable<Integer>(color(255, 0, 0, 0));
+  Patchable<Integer> color2 = new Patchable<Integer>(color(255, 0));
   float counter = -bandwidth.value() / 2.0;
 
   ScanLine(PixelMap pixelMap, Structure structure) {
@@ -211,6 +211,7 @@ void setup() {
   ScanLine a2 = new ScanLine(pixelMap, asterix);
   ScanLine t1 = new ScanLine(pixelMap, teatro);
   ScanLine t2 = new ScanLine(pixelMap, teatro);
+
   mp.seq(new PushCel(cel0, a1));
   mp.seq(new PushCel(cel0, t1));
   mp.seq(new PushCel(cel0, a2));
@@ -219,6 +220,10 @@ void setup() {
   mp.seq(new PatchSet(t1.speed, 1.0));
   mp.seq(new PatchSet(a2.speed, -1.0));
   mp.seq(new PatchSet(t2.speed, -1.0));
+  mp.seq(new PatchSet(a1.color2, color(255, 128, 0, 32)));
+  mp.seq(new PatchSet(t1.color2, color(255, 128, 0, 32)));
+  mp.seq(new PatchSet(a2.color2, color(255, 80, 180, 32)));
+  mp.seq(new PatchSet(t2.color2, color(255, 80, 180, 32)));
 
     
   mp.seq(new Wait(120));
