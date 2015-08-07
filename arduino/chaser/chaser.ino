@@ -20,7 +20,7 @@ uint32_t headColor = pink;
 uint32_t tailColor = orange;
 uint32_t endColor = 0;
 int headLength = 3;
-int tailLength = 15;
+int tailLength = 12;
 
 void setup() {
   strip = Adafruit_NeoPixel(N_PIXELS, PIN, NEO_GRB + NEO_KHZ800);
