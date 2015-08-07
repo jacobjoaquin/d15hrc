@@ -4,8 +4,6 @@ import moonpaper.opcodes.*;
 
 float lightSize = 4;  // Size of LEDs
 float eyeHeight = 170;
-//String jsonFile = "../teatro.json";  // JSON file containing LED structure data
-String jsonFile = "../asterix.json";  // JSON file containing LED structure data
 
 Strips strips;
 PVector theCamera = new PVector(0, eyeHeight, 0);

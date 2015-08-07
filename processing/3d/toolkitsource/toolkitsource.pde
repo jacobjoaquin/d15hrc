@@ -218,12 +218,16 @@ void setup() {
   mp.seq(new PushCel(cel0, t2));
   mp.seq(new PatchSet(a1.speed, 1.0));
   mp.seq(new PatchSet(t1.speed, 1.0));
-  mp.seq(new PatchSet(a2.speed, -1.0));
-  mp.seq(new PatchSet(t2.speed, -1.0));
-  mp.seq(new PatchSet(a1.color2, color(255, 128, 0, 32)));
-  mp.seq(new PatchSet(t1.color2, color(255, 128, 0, 32)));
-  mp.seq(new PatchSet(a2.color2, color(255, 80, 180, 32)));
-  mp.seq(new PatchSet(t2.color2, color(255, 80, 180, 32)));
+  mp.seq(new PatchSet(a2.speed, -4.0));
+  mp.seq(new PatchSet(t2.speed, -4.0));
+  mp.seq(new PatchSet(a1.color1, color(255, 128, 0)));
+  mp.seq(new PatchSet(a1.color2, color(255, 128, 0, 0)));
+  mp.seq(new PatchSet(t1.color1, color(255, 128, 0)));
+  mp.seq(new PatchSet(t1.color2, color(255, 128, 0, 0)));
+  mp.seq(new PatchSet(a2.color1, color(255, 80, 180)));
+  mp.seq(new PatchSet(a2.color2, color(255, 80, 180, 0)));
+  mp.seq(new PatchSet(t2.color1, color(255, 80, 180)));
+  mp.seq(new PatchSet(t2.color2, color(255, 80, 180, 0)));
 
     
   mp.seq(new Wait(120));
