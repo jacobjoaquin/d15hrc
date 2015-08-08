@@ -15,7 +15,7 @@ uint32_t pink = strip.Color(255, 64, 160);
 uint32_t white = strip.Color(127, 127, 127);
 
 // User defined settings
-int theDelay = 10;
+int theDelay = 20;
 uint32_t headColor = pink;
 uint32_t tailColor = orange;
 uint32_t endColor = 0;
@@ -37,12 +37,12 @@ void setup() {
 }
 
 void loop() {
-  chaser();
+  cycleBuffer();
   delay(theDelay);
 }
 
 uint32_t lerpColor(uint32_t c1, uint32_t c2, float amt) {
-  uint32_t r1 = (c1 & 0xff0000) >> uint32_t(16);
+  uint32_t r1 = (c1 & 0xff0000) >> 16;
   uint32_t g1 = (c1 & 0xff00) >> 8;
   uint32_t b1 = (c1 & 0xff);
   uint32_t r2 = (c2 & 0xff0000) >> 16;
@@ -56,9 +56,7 @@ uint32_t lerpColor(uint32_t c1, uint32_t c2, float amt) {
   return (uint32_t(r) << 16) | (uint32_t(g) << 8) | uint32_t(b); 
 }
 
-void chaser() {
-  strip.clear();
-  
+void cycleBuffer() {
   for (int i = 0; i < N_PIXELS; i++) {
     int thisPosition = (i + position) % N_PIXELS;    
 
