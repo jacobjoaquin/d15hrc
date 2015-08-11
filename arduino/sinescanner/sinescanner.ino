@@ -9,22 +9,20 @@
 
 // Internal variables
 Adafruit_NeoPixel strip;
-uint32_t theBuffer[SCANNER_LENGTH];
+uint32_t theBuffer[SCANNER_LENGTH + 1];
 float phase = 0.5;
-float phaseInc = 0.005;
 int direction = 1;
 uint32_t nextUpdate = 0;
 
 // User defined settings
 uint32_t theDelay = 10;
-uint32_t c1 = strip.Color(16, 0, 0);
-uint32_t c2 = strip.Color(255, 80, 0);
-
+float phaseInc = 0.004;
 
 void loadBuffer() {
-  setBufferColor(0x110000, 0xff8800, 0, 5);
+  setBufferColor(0, 0xff8800, 0, 5);
   theBuffer[5] = 0xff9922;
-  setBufferColor(0xff8800, 0x110000, 6, 5);
+  setBufferColor(0xff8800, 0, 6, 5);
+  theBuffer[SCANNER_LENGTH] = 0;
 }
 
 void setBufferColor(uint32_t c1, uint32_t c2, uint8_t offset, uint8_t theLength) {
@@ -65,19 +63,20 @@ uint32_t lerpColor(uint32_t c1, uint32_t c2, float amt) {
 void doScanner() {
   strip.clear();
 
-//  float p = (sin(phase * TWO_PI) + 1.0) / 2.0 * N_PIXELS - SCANNER_LENGTH / 2.0;
   float p = (sin(phase * TWO_PI) + 1.0) / 2.0 * N_PIXELS;
   int p0 = p;
-  int p1 = p0 + 1;
-  float interp = p - float(p0);
+  float interp = 1 - (p - float(p0));
+  int offset = SCANNER_LENGTH / 2;
   
-  uint32_t c2 = lerpColor(0xffffff, 0, interp);
-  uint32_t c3 = lerpColor(0xffffff, 0, 1 - interp);
+  for (int i = 0; i < SCANNER_LENGTH; i++) {
+    int pos = p0 - offset + i;
+    uint32_t c = lerpColor(theBuffer[i], theBuffer[i + 1], interp);
+    
+    if (pos >= 0 && pos < N_PIXELS) {
+      strip.setPixelColor(pos, c);
+    }
+  }
 
-  
-  strip.setPixelColor(int(p0), c2);
-  strip.setPixelColor(int(p1), c3);
-  
   strip.show();
   phase += phaseInc;
   phase -= phase >= 1.0 ? 1 : 0;
