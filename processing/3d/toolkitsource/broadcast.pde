@@ -1,9 +1,11 @@
 import hypermedia.net.*;
 import moonpaper.*;
 
+
 BroadcastReceiver broadcastReceiver;
 int meter = 100;
 
+// Send a PGraphics over UDP
 class Broadcast {
   Object receiveHandler;
   PixelMap pixelMap;
@@ -66,6 +68,7 @@ class Broadcast {
   }
 }
 
+// Receive UDP data, and write int o PG.
 class BroadcastReceiver {
   Object receiveHandler;
   PixelMap pixelMap;
@@ -118,6 +121,7 @@ class BroadcastReceiver {
   }
 }
 
+// Hander for receive UDP data.
 void broadcastReceiveHandler(byte[] data, String ip, int port) {
   broadcastReceiver.receive(data, ip, port);
 }
