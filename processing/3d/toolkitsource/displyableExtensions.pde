@@ -99,5 +99,11 @@ class DisplayableLEDs extends DisplayableStrips {
     pg.updatePixels();
     pg.endDraw();
   }
+  
+  void clear() {
+    for (LED led : leds) {
+        led.c = color(0, 0);
+    }
+  }
 }
 
