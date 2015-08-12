@@ -9,40 +9,20 @@
 
 // Internal variables
 Adafruit_NeoPixel strip;
-uint32_t theBuffer[SCANNER_LENGTH + 1];
+uint32_t theBuffer[SCANNER_LENGTH + 1];  // Extra guard point for interpolation
 float phase = 0.5;
 int direction = 1;
 uint32_t nextUpdate = 0;
+uint32_t theDelay = 10;
 
 // User defined settings
-uint32_t theDelay = 10;
 float phaseInc = 0.004;
 
-void loadBuffer() {
-  setBufferColor(0, 0xff8800, 0, 5);
-  theBuffer[5] = 0xff9922;
-  setBufferColor(0xff8800, 0, 6, 5);
-  theBuffer[SCANNER_LENGTH] = 0;
-}
 
 void setBufferColor(uint32_t c1, uint32_t c2, uint8_t offset, uint8_t theLength) {
   for (int i = 0; i < theLength; i++) {
     theBuffer[i + offset] = lerpColor(c1, c2, float(i) / float(theLength));
   }
-}
-
-void setup() {
-  strip = Adafruit_NeoPixel(N_PIXELS, PIN, NEO_GRB + NEO_KHZ800);
-  strip.begin();
-  strip.show();
-  loadBuffer();
-}
-
-void loop() {
-  doScanner();
-  strip.show();
-  while (millis() < nextUpdate) {}
-  nextUpdate = millis() + theDelay;
 }
 
 uint32_t lerpColor(uint32_t c1, uint32_t c2, float amt) {
@@ -60,10 +40,21 @@ uint32_t lerpColor(uint32_t c1, uint32_t c2, float amt) {
   return (uint32_t(r) << 16) | (uint32_t(g) << 8) | uint32_t(b);
 }
 
-void doScanner() {
+void loadBuffer() {
+//  setBufferColor(0, 0xff8800, 0, 5);
+//  theBuffer[5] = 0xff9922;
+//  setBufferColor(0xff8800, 0, 6, 5);
+//  theBuffer[SCANNER_LENGTH] = 0;
+  setBufferColor(0, 0xff0011, 0, 5);
+  theBuffer[5] = 0xff0033;
+  setBufferColor(0xff0011, 0, 6, 5);
+  theBuffer[SCANNER_LENGTH] = 0;
+}
+
+void updateScanner() {
   strip.clear();
 
-  float p = (sin(phase * TWO_PI) + 1.0) / 2.0 * N_PIXELS;
+  float p = (sin(phase * TWO_PI) + 1.0) / 2.0 * N_PIXELS + 0.5;
   int p0 = p;
   float interp = 1 - (p - float(p0));
   int offset = SCANNER_LENGTH / 2;
@@ -81,4 +72,19 @@ void doScanner() {
   phase += phaseInc;
   phase -= phase >= 1.0 ? 1 : 0;
 }
+
+void setup() {
+  strip = Adafruit_NeoPixel(N_PIXELS, PIN, NEO_GRB + NEO_KHZ800);
+  strip.begin();
+  strip.show();
+  loadBuffer();
+}
+
+void loop() {
+  updateScanner();
+  strip.show();
+  while (millis() < nextUpdate) {}
+  nextUpdate = millis() + theDelay;
+}
+
 
