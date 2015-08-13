@@ -11,11 +11,12 @@
 Adafruit_NeoPixel strip;
 uint32_t theBuffer[SCANNER_LENGTH + 1];  // Extra guard point for interpolation
 float phase = 0.5;
+float phase2 = 0.0;
 int direction = 1;
 
 // User defined settings
 float phaseInc = 0.008;
-
+float phase2Inc = 0.001;
 
 void setBufferColor(uint32_t c1, uint32_t c2, uint8_t offset, uint8_t theLength) {
   for (int i = 0; i < theLength; i++) {
@@ -67,7 +68,9 @@ void updateScanner() {
   }
 
   strip.show();
-  phase += phaseInc;
+  phase2 += phase2Inc;
+  phase2 -= phase2 >= 1.0 ? 1 : 0;
+  phase += ((sin(phase2 * TWO_PI) + 1) / 2.0) * 0.02 + 0.002;
   phase -= phase >= 1.0 ? 1 : 0;
 }
 
@@ -83,3 +86,4 @@ void loop() {
   strip.show();
   delay(5);
 }
+
