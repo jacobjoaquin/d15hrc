@@ -67,7 +67,7 @@ class Teatro extends StructureLayout {
 
 
     // verticals
-    {
+    if (false) {
       pushMatrix();
       translate(inchesToCM( crossbar + spacer / 2.0), 0, 0);
 
