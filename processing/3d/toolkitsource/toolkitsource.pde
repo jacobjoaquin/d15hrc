@@ -203,14 +203,17 @@ void setup() {
 //  mp.seq(new PushCel(cel0, new GradientStrips(pixelMap, asterix)));
 //  mp.seq(new PushCel(cel0, new GradientLEDs(pixelMap, asterix)));
 //  mp.seq(new Wait(120));
-  mp.seq(new PushCel(cel0, cn));
+//  mp.seq(new PushCel(cel0, cn));
   
-  
+  mp.seq(new PushCel(cel0, new ScanLine(pixelMap, new StructurePixelMap(pixelMap))));
+  mp.seq(new Wait(240));
+
   
   ScanLine a1 = new ScanLine(pixelMap, asterix);
   ScanLine a2 = new ScanLine(pixelMap, asterix);
   ScanLine t1 = new ScanLine(pixelMap, teatro);
   ScanLine t2 = new ScanLine(pixelMap, teatro);
+
 
   mp.seq(new PushCel(cel0, a1));
   mp.seq(new PushCel(cel0, t1));

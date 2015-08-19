@@ -77,7 +77,7 @@ class Structure {
     }
     return w;
   }
-  
+
   // getBox
   // getHeight
   // getDepth
@@ -86,9 +86,22 @@ class Structure {
 }
 
 class ComboStructure extends Structure {
-  
-  
   ComboStructure(PixelMap pixelMap, Structures structures) {
     super(pixelMap);
   }
 }
+
+class StructurePixelMap extends Structure {
+  StructurePixelMap(PixelMap pixelMap) {
+    super(pixelMap);
+    setup();
+  }
+
+  void setup() {
+    strips = new Strips();
+    strips.addAll(pixelMap.strips);
+    rowOffset = 0;
+    //      this.pixelMap.addStrips(strips);
+  }
+}
+
